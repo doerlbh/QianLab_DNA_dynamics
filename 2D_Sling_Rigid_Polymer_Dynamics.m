@@ -41,18 +41,14 @@ p = createRandPolymer(node); % randomly generate
 
 %% Construct a recorder
 
-pF = zeros(1,trial)
-
-
-
+pF = zeros(1,trial); % record times to form a loop
 
 %% Simulation of twisting
 
 for n = 1:trial
     
-    
     % To twist till looped
-    [Pnew, fin] = twistLoop(p, node, Pc, Pt, a, L, angle)
+    [Pnew, fin] = twistLoopseries(p, node, Pc, Pt, a, L, angle)
     
 end
 
@@ -62,7 +58,7 @@ end
 function fp = createPolymer(fnode,fPc)
 % To create a natural polymer with fnode nodes based on probability
 
-for no = 1:fnode-1
+for no = 2:fnode-1
     if rand() < fPc
         fp(no) = 1;      % cis
     else
@@ -75,7 +71,7 @@ end
 function fp = createRandPolymer(fnode)
 % To create a random polymer with fnode nodes
 
-for no = 1:fnode-1
+for no = 2:fnode-1
     if rand() > 0.5
         fp(no) = 1;      % cis
     else
@@ -86,15 +82,34 @@ end
 
 end
 
-function [fPnew, ffin] = twistLoop(fp, fnode, fPc, fPt, fa, fL, fangle)
+function [fPnew, ffin] = twistLoopseries(fp, fnode, fPc, fPt, fa, fL, fangle)
 % To twist till formed a loop
 
-fPnew
+fPnew = fp;
+ffin = 0;
+while headtaildist(fPnew) < a {
+    for no = 2:fnode-1
+        Phypo = [fPnew(1:no-1), -fPnew(no:end)];
+        if rand() < pE(Phypo)/(pE(Phypo)+pE(fPnew))
+            fPnew(no:end) = -fPnew(no:end);      % change state
+        end
+    end
+    ffin = ffin+1;
+end
+end
+
 end
 
 function [fPnew, fE] = twistPoly(fp, fnode, fPc, fPt, fa, fL, fangle)
 % To twist at specific twist number
+fE = pE(fPnew)
 
-fE = polyenergy(fPnew)
+end
+
+function fE = pE(fp, Hc, Ht)
+% To calculate energy of a certain polymer state
+
+fE = pE(fPnew)
+
 end
 

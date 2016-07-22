@@ -3,6 +3,9 @@
 % by Baihan Lin, Qian Lab
 % July 2016
 
+clear all;
+close all;
+
 %% Initialization
 
 rng(1);                 % randomizer
@@ -34,37 +37,32 @@ Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
 % default change = counterclockwise angle
 
 p = createRandPolymer(node); % randomly generate
-%p = createPolymer(node,Pc,Pt); % naturally generate
+%p = createPolymer(node,Pc); % naturally generate
 
 %% Construct a recorder
 
-pF = zeros(1,trial)
-
-
-
+pF = zeros(1,trial); % record times to form a loop
 
 %% Simulation of twisting
 
 for n = 1:trial
     
-    
     % To twist till looped
-    [Pnew, fin] = twistLoop(p, node, Pc, Pt, a, L, angle)
+    [Pnew, fin] = twistLoopseries(p, node, Pc, Pt, a, L, angle)
     
 end
 
 
 %% Local functions
 
-function fp = createPolymer(fnode,fPc,fPt)
+function fp = createPolymer(fnode,fPc)
 % To create a natural polymer with fnode nodes based on probability
 
 for no = 1:fnode-1
-
-    if rand()
-        fp(no) = 1      % cis
+    if rand() < fPc
+        fp(no) = 1;      % cis
     else
-        fp(no) = -1     % trans
+        fp(no) = -1;     % trans
     end
 end
 
@@ -73,12 +71,28 @@ end
 function fp = createRandPolymer(fnode)
 % To create a random polymer with fnode nodes
 
+for no = 1:fnode-1
+    if rand() > 0.5
+        fp(no) = 1;      % cis
+    else
+        fp(no) = -1;     % trans
+    end
 end
 
-function [fPnew, ffin] = twistLoop(fp, fnode, fPc, fPt, fa, fL, fangle)
+
+end
+
+function [fPnew, ffin] = twistLoopseries(fp, fnode, fPc, fPt, fa, fL, fangle)
 % To twist till formed a loop
 
-fPnew
+fPnew = fp;
+ffin = 0;
+while headtaildist(fPnew) < a {
+    
+    ffin = ffin+1;
+end
+
+
 end
 
 function [fPnew, fE] = twistPoly(fp, fnode, fPc, fPt, fa, fL, fangle)
