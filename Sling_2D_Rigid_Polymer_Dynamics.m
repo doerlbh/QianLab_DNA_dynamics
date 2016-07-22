@@ -50,7 +50,7 @@ pF = zeros(1,trial); % record times to form a loop
 for n = 1:trial
     
     % To twist till looped
-    [Pnew, fin] = twistLoopseries(p, node, Pc, Pt, a, L, angle)
+    [Pnew, fin] = twistLoopSeries(p, node, Pc, Pt, a, L, angle)
     
 end
 
@@ -82,12 +82,12 @@ end
 
 end
 
-function [fPnew, ffin] = twistLoopseries(fp, fnode, fPc, fPt, fa, fL, fangle)
+function [fPnew, ffin] = twistLoopSeries(fp, fnode, fPc, fPt, fa, fL, fangle)
 % To twist node by node till formed a loop
 
 fPnew = fp;
 ffin = 0;
-while headtaildist(fPnew) < a {
+while HTdist(fPnew) < a
     for no = 2:fnode-1
         Phypo = [fPnew(1:no-1), -fPnew(no:end)];
         if rand() < pE(Phypo)/(pE(Phypo)+pE(fPnew))
@@ -95,7 +95,6 @@ while headtaildist(fPnew) < a {
         end
     end
     ffin = ffin+1;
-end
 end
 
 end
@@ -109,11 +108,11 @@ end
 function fE = pE(fp)
 % To calculate energy of a certain polymer state
 
-fE = pE(fp, Hc, Ht)
+fE = pEfull(fp, Hc, Ht)
 
 end
 
-function fE = pE(fp, Hc, Ht)
+function fE = pEfull(fp, Hc, Ht)
 % To calculate energy of a certain polymer state
 
 fE = 0
@@ -127,6 +126,17 @@ end
 
 end
 
+function fD = HTdist(fp)
+% To calculate the head-tail distance of a polymer
 
+    fD = HTdistfull(fp, fL, fangle)
+    
+end
 
+function fD = HTdistfull(fp, fL, fangle)
+% To calculate the head-tail distance of a polymer
+    
+    
+    
+end
 
