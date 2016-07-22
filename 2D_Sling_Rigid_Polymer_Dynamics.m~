@@ -5,8 +5,10 @@
 
 %% Initialization
 
-trial = 1;              % training
-twist = 200;            % change of state
+rng(1);                 % randomizer
+
+trial = 1;              % trials
+%twist = 200;            % change of state
 node = 8;               % nodes of rigid polymer
 
 angle = 0.05;           % in rad, angle changed in each twist
@@ -19,21 +21,25 @@ a = 10;                 % threshold to form loop
 %kT = 4.11e-21;          % at 25°C (298 K)
 %b = 1/kT;               % thermodynamic beta
 
-Hc = 1.0;   % in kT, energy level of cis rigid configuration
-Ht = 0.9;   % energy level of trans rigid configuration
+Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
+Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
+b = 1;      % redefined beta based on H
 
 Pc = exp(-b*Hc)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of cis change
 Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
 
 %% Generate a polymer
 
+% initial direction = positive x
+% default change = counterclockwise angle
+
 p = createRandPolymer(node); % randomly generate
 %p = createPolymer(node,Pc,Pt); % naturally generate
 
 %% Construct a recorder
 
-pF = 
-adf
+pF = zeros(1,trial)
+
 
 
 
@@ -53,6 +59,15 @@ end
 function fp = createPolymer(fnode,fPc,fPt)
 % To create a natural polymer with fnode nodes based on probability
 
+for no = 1:fnode-1
+
+    if rand()
+        fp(no) = 1      % cis
+    else
+        fp(no) = -1     % trans
+    end
+end
+
 end
 
 function fp = createRandPolymer(fnode)
@@ -63,13 +78,12 @@ end
 function [fPnew, ffin] = twistLoop(fp, fnode, fPc, fPt, fa, fL, fangle)
 % To twist till formed a loop
 
-
+fPnew
 end
 
 function [fPnew, fE] = twistPoly(fp, fnode, fPc, fPt, fa, fL, fangle)
 % To twist at specific twist number
 
-    fE = polyenergy 
-    
+fE = polyenergy(fPnew)
 end
 

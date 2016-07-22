@@ -3,10 +3,15 @@
 % by Baihan Lin, Qian Lab
 % July 2016
 
+clear all;
+close all;
+
 %% Initialization
 
-trial = 1;              % training
-twist = 200;            % change of state
+rng(1);                 % randomizer
+
+trial = 1;              % trials
+%twist = 200;            % change of state
 node = 8;               % nodes of rigid polymer
 
 angle = 0.05;           % in rad, angle changed in each twist
@@ -28,12 +33,15 @@ Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
 
 %% Generate a polymer
 
+% initial direction = positive x
+% default change = counterclockwise angle
+
 p = createRandPolymer(node); % randomly generate
-%p = createPolymer(node,Pc,Pt); % naturally generate
+%p = createPolymer(node,Pc); % naturally generate
 
 %% Construct a recorder
 
-pF = []
+pF = zeros(1,trial)
 
 
 
@@ -51,26 +59,42 @@ end
 
 %% Local functions
 
-function fp = createPolymer(fnode,fPc,fPt)
+function fp = createPolymer(fnode,fPc)
 % To create a natural polymer with fnode nodes based on probability
+
+for no = 1:fnode-1
+    if rand() < fPc
+        fp(no) = 1;      % cis
+    else
+        fp(no) = -1;     % trans
+    end
+end
 
 end
 
 function fp = createRandPolymer(fnode)
 % To create a random polymer with fnode nodes
 
+for no = 1:fnode-1
+    if rand() > 0.5
+        fp(no) = 1;      % cis
+    else
+        fp(no) = -1;     % trans
+    end
+end
+
+
 end
 
 function [fPnew, ffin] = twistLoop(fp, fnode, fPc, fPt, fa, fL, fangle)
 % To twist till formed a loop
 
-
+fPnew
 end
 
 function [fPnew, fE] = twistPoly(fp, fnode, fPc, fPt, fa, fL, fangle)
 % To twist at specific twist number
 
-    fE = polyenergy(fPnew)
-    
+fE = polyenergy(fPnew)
 end
 
