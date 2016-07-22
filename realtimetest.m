@@ -37,4 +37,4 @@ while ( t <interv )
       pause(0.002)
 end
   
-saveas(fig1, '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/test.png','png');
+saveas(gcf, '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/test.png','png');

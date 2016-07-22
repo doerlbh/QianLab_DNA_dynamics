@@ -122,7 +122,6 @@ while HTdist(fPnew, fL, fangle) > fa
     ffin = ffin+1;
     
     
-    
     text(0,0,strcat('Switch',num2str(ffin));
 end
 
