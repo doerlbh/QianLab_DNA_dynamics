@@ -50,7 +50,7 @@ pF = zeros(1,trial); % record times to form a loop
 for n = 1:trial
     
     % To twist till looped
-    [Pnew, fin] = twistLoopSeries(p, Pc, Pt, a, L, angle)
+    [Pnew, fin] = twistLoopSeries(p, node, Pc, Pt, a, L, angle)
     
 end
 
@@ -86,13 +86,14 @@ end
 
 end
 
-function [fPnew, ffin] = twistLoopSeries(fp, fPc, fPt, fa, fL, fangle)
+function [fPnew, ffin] = twistLoopSeries(fp, node, fPc, fPt, fa,
+fL, fangle)
 % To twist node by node till formed a loop
 
 fPnew = fp;
 ffin = 0;
-while HTdist(fPnew, fL, fangle) < fa
-    for no = 2:length(fp)-1
+while HTdist(fPnew, fL, fangle) < a
+    for no = 2:len-1
         Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
         if rand() < pE(Phypo)/(pE(Phypo)+pE(fPnew))
             fPnew(no:end) = -fPnew(no:end);      % change state
