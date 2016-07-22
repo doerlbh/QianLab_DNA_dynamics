@@ -104,7 +104,7 @@ disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 while HTdist(fPnew, fL, fangle) > fa
     
     for no = 2:length(fp)-1
-        Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
+        Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change---------------
         Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
         if rand() < Pchg
             fPnew(no:end) = -fPnew(no:end);      % change state

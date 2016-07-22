@@ -13,9 +13,9 @@ pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/';
 
 rng(2);                 % randomizer
 
-trial = 2;              % trials
+trial = 100;              % trials
 %twist = 200;            % change of state
-node = 13;               % nodes of rigid polymer
+node = 100;               % nodes of rigid polymer
 
 angle = 0.2;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
@@ -52,9 +52,17 @@ pF = zeros(1,trial); % record times to form a loop
 
 for n = 1:trial
     % To twist till looped
-    [Pnew, fin] = twistLoopSeries(n, p, Pc, Pt, a, L, angle, Hc, Ht);
+    [Pnew, fin] = twistLoopRand(n, p, Pc, Pt, a, L, angle, Hc, Ht);
     pF(n) = fin;
 end
+
+fig = figure;
+hist(pF);
+title(strcat('Hist for ', num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/Hist-';
+filename = strcat(pathName, num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+saveas(gcf, filename,'png');
+%close gcf;
 
 
 %% Local functions
@@ -117,7 +125,7 @@ grid;
 xlabel 'x';
 ylabel 'y';
 title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
-text(0,0,strcat('ffin',num2str(ffin)));
+text(0,0,strcat('ffin=',num2str(ffin)));
 
 disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
@@ -154,8 +162,11 @@ while HTdist(fPnew, fL, fangle) > fa
         xc = xlim;
         xl = xc(1)*0.2+xc(2)*0.8;
         yc = ylim;
-        yl = yc(1)*0.2+yc(2)*0.8;
-        text(xl,yl,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+        yl1 = yc(1)*0.17+yc(2)*0.83;
+        yl2 = yc(1)*0.23+yc(2)*0.77;
+        text(xl,yl1,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+        text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
+
         drawnow;
         %pause(0.002)
         
@@ -165,7 +176,7 @@ while HTdist(fPnew, fL, fangle) > fa
 end
 
 path ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/';
-filename = strcat(path, num2str(length(fp)),'node-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png')
+filename = strcat(path, num2str(length(fp)),'node-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 close gcf;
 
@@ -175,6 +186,87 @@ disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
 
 end
 
+function [fPnew, ffin] = twistLoopRand(ft, fp, fPc, fPt, fa, fL, fangle, fHc, fHt)
+% To twist randomly till formed a loop
+
+disp(strcat('T-',num2str(ft),'-------------'));
+
+fPnew = fp;
+ffin = 1;
+
+fig = figure;
+fv = visV(buildV(fPnew, fL, fangle));
+xt = fv(1,:);
+yt = fv(2,:);
+plot(xt(1:ffin), yt(1:ffin));
+xlmin = min(xt);
+xlmax = max(xt);
+ylmin = min(yt);
+ylmax = max(yt);
+axis([ xlmin, xlmax, ylmin, ylmax]);
+grid;
+xlabel 'x';
+ylabel 'y';
+title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
+text(0,0,strcat('ffin',num2str(ffin)));
+
+disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
+
+while HTdist(fPnew, fL, fangle) > fa
+    
+        no =  randsample(2:length(fp)-1,1);
+        
+        Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
+        Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
+        if rand() < Pchg
+            fPnew(no:end) = -fPnew(no:end);      % change state
+        end
+        if HTdist(fPnew, fL, fangle) < fa
+            break;
+        end
+        
+        ffin = ffin+1;
+        stair = ffin;
+        if ffin > length(fp)-1
+            stair = length(fp)-1;
+        end
+        
+        fv = visV(buildV(fPnew, fL, fangle));
+        xt = fv(1,:);
+        yt = fv(2,:);
+        
+        plot(xt(1:stair), yt(1:stair));
+        title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
+        grid;
+        xlmin = min(min(xt),xlmin);
+        xlmax = max(max(xt),xlmax);
+        ylmin = min(min(yt),ylmin);
+        ylmax = max(max(yt),ylmax);
+        axis([ xlmin, xlmax, ylmin, ylmax]);
+        xc = xlim;
+        xl = xc(1)*0.2+xc(2)*0.8;
+        yc = ylim;
+        yl1 = yc(1)*0.17+yc(2)*0.83;
+        yl2 = yc(1)*0.23+yc(2)*0.77;
+        text(xl,yl1,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+        text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
+        drawnow;
+        %pause(0.002)
+        
+        disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
+    
+end
+
+path ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/';
+filename = strcat(path, num2str(length(fp)),'node-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+saveas(gcf, filename,'png');
+close gcf;
+
+disp(strcat('final state: ', num2str(fPnew)));
+disp(strcat('finish time: ', num2str(ffin)));
+disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
+
+end
 
 % function [fPnew, fE] = twistPoly(fp, fPc, fPt, fa, fL, fangle)
 % % To twist at specific twist number

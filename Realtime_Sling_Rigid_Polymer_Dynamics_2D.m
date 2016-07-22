@@ -15,9 +15,9 @@ rng(2);                 % randomizer
 
 trial = 100;              % trials
 %twist = 200;            % change of state
-node = 50;               % nodes of rigid polymer
+node = 100;               % nodes of rigid polymer
 
-angle = 0.1;           % in rad, angle changed in each twist
+angle = 0.2;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
@@ -58,7 +58,7 @@ end
 
 fig = figure;
 hist(pF);
-title(strcat('Hist for ', num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+title(strcat('Hist for ', num2str(node),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
 pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/Hist-';
 filename = strcat(pathName, num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
@@ -125,7 +125,7 @@ grid;
 xlabel 'x';
 ylabel 'y';
 title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
-text(0,0,strcat('ffin',num2str(ffin)));
+text(0,0,strcat('ffin=',num2str(ffin)));
 
 disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
@@ -162,8 +162,11 @@ while HTdist(fPnew, fL, fangle) > fa
         xc = xlim;
         xl = xc(1)*0.2+xc(2)*0.8;
         yc = ylim;
-        yl = yc(1)*0.2+yc(2)*0.8;
-        text(xl,yl,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+        yl1 = yc(1)*0.17+yc(2)*0.83;
+        yl2 = yc(1)*0.23+yc(2)*0.77;
+        text(xl,yl1,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+        text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
+
         drawnow;
         %pause(0.002)
         
@@ -243,8 +246,10 @@ while HTdist(fPnew, fL, fangle) > fa
         xc = xlim;
         xl = xc(1)*0.2+xc(2)*0.8;
         yc = ylim;
-        yl = yc(1)*0.2+yc(2)*0.8;
-        text(xl,yl,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+        yl1 = yc(1)*0.17+yc(2)*0.83;
+        yl2 = yc(1)*0.23+yc(2)*0.77;
+        text(xl,yl1,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+        text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
         drawnow;
         %pause(0.002)
         
@@ -301,8 +306,8 @@ function fm = buildV(fp, fL, fangle)
 fx = ones(1, length(fp)-1)*fL;
 fy = zeros(1, length(fp)-1);
 fm = [fx;fy];
-rot1 = [cos(fangle) -sin(fangle); sin(fangle) cos(fangle)];
-rot2 = [cos(-fangle) -sin(-fangle); sin(-fangle) cos(-fangle)];
+rot1 = [cos(fangle) -sin(fangle); sin(fangle) cos(fangle)]; % clockwise
+rot2 = [cos(-fangle) -sin(-fangle); sin(-fangle) cos(-fangle)]; % counterclockwise
 
 for no = 2:length(fp)-1
     if fp(no) == 1
