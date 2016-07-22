@@ -12,9 +12,9 @@ rng(1);                 % randomizer
 
 trial = 2;              % trials
 %twist = 200;            % change of state
-node = 13;               % nodes of rigid polymer
+node = 12;               % nodes of rigid polymer
 
-angle = 0.05;           % in rad, angle changed in each twist
+angle = 0.1;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
@@ -49,7 +49,7 @@ pF = zeros(1,trial); % record times to form a loop
 
 for n = 1:trial
     % To twist till looped
-    [Pnew, fin] = twistLoopSeries(p, Pc, Pt, a, L, angle, Hc, Ht);
+    [Pnew, fin] = twistLoopSeries(n, p, Pc, Pt, a, L, angle, Hc, Ht);
     pF(n) = fin;
 end
 
@@ -86,11 +86,12 @@ for no = 2:fnode-1
     end
 end
 
+disp('------Simulation-Starts-------');
 disp(strcat('createRandPolymer: ', num2str(fp)));
-
+disp('--trials--');
 end
 
-function [fPnew, ffin] = twistLoopSeries(fp, fPc, fPt, fa, fL, fangle, fHc, fHt)
+function [fPnew, ffin] = twistLoopSeries(ft, fp, fPc, fPt, fa, fL, fangle, fHc, fHt)
 % To twist node by node till formed a loop
 
 fPnew = fp;
@@ -106,10 +107,11 @@ while HTdist(fPnew, fL, fangle) > fa
     ffin = ffin+1;
 end
 
+disp(strcat('T-',num2str(ft),'-------------'));
 disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish time: ', num2str(ffin)));
 disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
-disp('-------------');
+
 end
 
 % function [fPnew, fE] = twistPoly(fp, fPc, fPt, fa, fL, fangle)
