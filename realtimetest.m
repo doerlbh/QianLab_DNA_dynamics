@@ -38,3 +38,4 @@ while ( t <interv )
 end
   
 saveas(gcf, '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/test.png','png');
+close gcf;

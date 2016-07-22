@@ -12,7 +12,7 @@ rng(1);                 % randomizer
 
 trial = 2;              % trials
 %twist = 200;            % change of state
-node = 12;               % nodes of rigid polymer
+node = 13;               % nodes of rigid polymer
 
 angle = 0.1;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
@@ -94,9 +94,12 @@ end
 function [fPnew, ffin] = twistLoopSeries(ft, fp, fPc, fPt, fa, fL, fangle, fHc, fHt)
 % To twist node by node till formed a loop
 
-fPnew = fp;
+disp(strcat('T-',num2str(ft),'-------------'));
 
+fPnew = fp;
 ffin = 1;
+
+disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
 while HTdist(fPnew, fL, fangle) > fa
     
@@ -109,13 +112,15 @@ while HTdist(fPnew, fL, fangle) > fa
         if HTdist(fPnew, fL, fangle) < fa
             break;
         end
+        
         ffin = ffin+1;
+        disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
+        
     end
     
 end
 
 
-disp(strcat('T-',num2str(ft),'-------------'));
 disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish time: ', num2str(ffin)));
 disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
@@ -137,7 +142,6 @@ fs = diag(fp(2:length(fp)-2).'*fp(3:length(fp)-1));
 
 for no = 1:length(fp)-3
     if fs(no) == 1
-        
         fE = fE + fHc;      % cis
     else
         fE = fE + fHt;     % trans

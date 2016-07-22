@@ -96,45 +96,72 @@ end
 function [fPnew, ffin] = twistLoopSeries(ft, fp, fPc, fPt, fa, fL, fangle, fHc, fHt)
 % To twist node by node till formed a loop
 
-fPnew = fp;
-ffin = 0;
+disp(strcat('T-',num2str(ft),'-------------'));
 
+fPnew = fp;
+ffin = 1;
 
 fig = figure;
 fv = visV(buildV(fPnew, fL, fangle));
 xt = fv(1,:);
-yt = yt(2,:);
-plot(xt(1), yt(1));
+yt = fv(2,:);
+plot(xt(1:ffin), yt(1:ffin));
+grid;
 
 xlabel 'x';
 ylabel 'y';
 title(strcat('Simulation of ',num2str(length(fp)),'node rigid polymer dynamics'));
-text(0,0,strcat('Switch',num2str(ffin));
+text(0,0,strcat('ffin',num2str(ffin)));
+
+disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
 while HTdist(fPnew, fL, fangle) > fa
+    
     for no = 2:length(fp)-1
         Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
         Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
         if rand() < Pchg
             fPnew(no:end) = -fPnew(no:end);      % change state
         end
+        if HTdist(fPnew, fL, fangle) < fa
+            break;
+        end
+        
+        ffin = ffin+1;
+        stair = ffin;
+        if ffin > length(fp)-1
+            stair = length(fp)-1;
+        end
+        
+        fv = visV(buildV(fPnew, fL, fangle));
+        xt = fv(1,:);
+        yt = fv(2,:);
+        
+        title(strcat('Simulation of ',num2str(length(fp)),'node rigid polymer dynamics'));
+        plot(xt(1:stair), yt(1:stair));
+        
+        xc = xlim;
+        xl = xc(1)*0.2+xc(2)*0.8;
+        yc = ylim;
+        yl = yc(1)*0.2+yc(2)*0.8;
+        text(xl,yl,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+        drawnow;
+        %pause(0.002)
+        
+        disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     end
-    ffin = ffin+1;
     
-    
-    
-    text(0,0,strcat('Switch',num2str(ffin));
 end
 
 saveas(gcf, strcat(path,'-T',num2str(ft),'.png'),'png');
+close gcf;
 
-
-disp(strcat('T-',num2str(ft),'-------------'));
 disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish time: ', num2str(ffin)));
 disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
 
 end
+
 
 % function [fPnew, fE] = twistPoly(fp, fPc, fPt, fa, fL, fangle)
 % % To twist at specific twist number
@@ -196,3 +223,4 @@ for no = 2:length(fm)
 end
 
 end
+
