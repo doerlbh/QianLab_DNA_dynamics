@@ -35,6 +35,8 @@ Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
 
 % initial direction = positive x
 % default change = counterclockwise angle
+% in this vector, first and last node are zero
+% from node 2 to node n-1, they are either 1 (cis) or -1 (trans) 
 
 p = createRandPolymer(node); % randomly generate
 %p = createPolymer(node,Pc); % naturally generate
