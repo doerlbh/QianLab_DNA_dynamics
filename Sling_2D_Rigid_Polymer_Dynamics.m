@@ -12,9 +12,9 @@ rng(1);                 % randomizer
 
 trial = 1;              % trials
 %twist = 200;            % change of state
-node = 3;               % nodes of rigid polymer
+node = 4;               % nodes of rigid polymer
 
-angle = 0.05;           % in rad, angle changed in each twist
+angle = 0.1;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
@@ -48,10 +48,9 @@ pF = zeros(1,trial); % record times to form a loop
 %% Simulation of twisting
 
 for n = 1:trial
-    
     % To twist till looped
-    [Pnew, fin] = twistLoopSeries(p, Pc, Pt, a, L, angle)
-    
+    [Pnew, fin] = twistLoopSeries(p, Pc, Pt, a, L, angle, Hc, Ht);
+    pF(n) = fin;
 end
 
 %% Local functions
@@ -71,11 +70,14 @@ for no = 3:fnode-1
     end
 end
 
+disp('createNatPolymer: '+ fp);
+
 end
 
 function fp = createRandPolymer(fnode)
 % To create a random polymer with node nodes
 
+fp = zeros(1,fnode)
 for no = 2:fnode-1
     if rand() > 0.5
         fp(no) = 1;      % clockwise
@@ -84,9 +86,11 @@ for no = 2:fnode-1
     end
 end
 
+disp(strcat('createRandPolymer: ', num2str(fp)));
+
 end
 
-function [fPnew, ffin] = twistLoopSeries(fp, fPc, fPt, fa, fL, fangle)
+function [fPnew, ffin] = twistLoopSeries(fp, fPc, fPt, fa, fL, fangle, fHc, fHt)
 % To twist node by node till formed a loop
 
 fPnew = fp;
@@ -94,20 +98,25 @@ ffin = 0;
 while HTdist(fPnew, fL, fangle) < fa
     for no = 2:length(fp)-1
         Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
-        if rand() < pE(Phypo)/(pE(Phypo)+pE(fPnew))
+        Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
+        if rand() < Pchg
             fPnew(no:end) = -fPnew(no:end);      % change state
         end
     end
     ffin = ffin+1;
 end
 
+disp(strcat('final state: ', num2str(fPnew)));
+disp(strcat('finish time: ', num2str(ffin)));
+disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
+
 end
 
 % function [fPnew, fE] = twistPoly(fp, fPc, fPt, fa, fL, fangle)
 % % To twist at specific twist number
-% 
+%
 % fE = pE(fPnew, fHc, fHt);
-% 
+%
 % end
 
 function fE = pE(fp, fHc, fHt)
@@ -115,11 +124,13 @@ function fE = pE(fp, fHc, fHt)
 
 fE = 0;
 fs = diag(fp(2:length(fp)-2).'*fp(3:length(fp)-1));
-for no = 1:node-2
+
+for no = 1:length(fp)-3
     if fs(no) == 1
-        fE = fE + Hc;      % cis
+        
+        fE = fE + fHc;      % cis
     else
-        fE = fE + Ht;     % trans
+        fE = fE + fHt;     % trans
     end
 end
 
