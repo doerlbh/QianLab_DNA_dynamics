@@ -13,14 +13,15 @@ angle = 0.05;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
-T = 300;                % temperature (K)
-k = 1.38064852e-23;     % Boltzmann constant (J/K)
+%T = 300;                % temperature (K)
+%k = 1.38064852e-23;     % Boltzmann constant (J/K)
 %b = 1/(k*T);           % thermodynamic beta
-kT = 4.11e-21;          % at 25°C (298 K)
-b = 1/kT;               % thermodynamic beta
+%kT = 4.11e-21;          % at 25°C (298 K)
+%b = 1/kT;               % thermodynamic beta
 
-Hc = 1.0;   % energy level of cis rigid configuration
-Ht = 0.9;   % energy level of trans rigid configuration
+Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
+Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
+b = 1;      % redefined beta based on H
 
 Pc = exp(-b*Hc)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of cis change
 Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
@@ -31,6 +32,8 @@ p = createRandPolymer(node); % randomly generate
 %p = createPolymer(node,Pc,Pt); % naturally generate
 
 %% Construct a recorder
+
+pF = []
 
 
 
@@ -67,7 +70,7 @@ end
 function [fPnew, fE] = twistPoly(fp, fnode, fPc, fPt, fa, fL, fangle)
 % To twist at specific twist number
 
-    fE = polyenergy 
+    fE = polyenergy(fPnew)
     
 end
 
