@@ -1,10 +1,12 @@
-% Sling_Rigid_Polymer_Dynamics_2D
+% Realtime_Sling_Rigid_Polymer_Dynamics_2D
 % To simulate the dynamics of a rigid polymer by Sling model in 2D
 % by Baihan Lin, Qian Lab
 % July 2016
 
 clear all;
 close all;
+
+path = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/';
 
 %% Initialization
 
