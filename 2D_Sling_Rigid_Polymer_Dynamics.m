@@ -36,7 +36,7 @@ Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
 % initial direction = positive x
 % default change = counterclockwise angle
 % in this vector, first and last node are zero
-% from node 2 to node n-1, they are either 1 (cis) or -1 (trans) 
+% from node 2 to node n-1, they are either 1 (cis) or -1 (trans)
 
 p = createRandPolymer(node); % randomly generate
 %p = createPolymer(node,Pc); % naturally generate
@@ -53,7 +53,6 @@ for n = 1:trial
     [Pnew, fin] = twistLoopseries(p, node, Pc, Pt, a, L, angle)
     
 end
-
 
 %% Local functions
 
@@ -81,11 +80,10 @@ for no = 2:fnode-1
     end
 end
 
-
 end
 
 function [fPnew, ffin] = twistLoopseries(fp, fnode, fPc, fPt, fa, fL, fangle)
-% To twist till formed a loop
+% To twist node by node till formed a loop
 
 fPnew = fp;
 ffin = 0;
@@ -108,10 +106,27 @@ fE = pE(fPnew)
 
 end
 
+function fE = pE(fp)
+% To calculate energy of a certain polymer state
+
+fE = pE(fp, Hc, Ht)
+
+end
+
 function fE = pE(fp, Hc, Ht)
 % To calculate energy of a certain polymer state
 
-fE = pE(fPnew)
+fE = 0
+for no = 2:fnode-1
+    if fp(no) = 1
+        fE = fE + Hc;      % cis
+    else
+        fE = fE + Ht;     % trans
+    end
+end
 
 end
+
+
+
 
