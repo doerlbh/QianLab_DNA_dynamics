@@ -10,9 +10,9 @@ close all;
 
 rng(1);                 % randomizer
 
-trial = 1;              % trials
+trial = 2;              % trials
 %twist = 200;            % change of state
-node = 4;               % nodes of rigid polymer
+node = 12;               % nodes of rigid polymer
 
 angle = 0.1;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
@@ -49,7 +49,7 @@ pF = zeros(1,trial); % record times to form a loop
 
 for n = 1:trial
     % To twist till looped
-    [Pnew, fin] = twistLoopSeries(p, Pc, Pt, a, L, angle);
+    [Pnew, fin] = twistLoopSeries(n, p, Pc, Pt, a, L, angle, Hc, Ht);
     pF(n) = fin;
 end
 
@@ -70,14 +70,14 @@ for no = 3:fnode-1
     end
 end
 
-disp('createNatPolymer: '+ fp);
+disp(strcat('createNatPolymer: ', num2str(fp)));
 
 end
 
 function fp = createRandPolymer(fnode)
 % To create a random polymer with node nodes
 
-fp = zeros(1,fnode)
+fp = zeros(1,fnode);
 for no = 2:fnode-1
     if rand() > 0.5
         fp(no) = 1;      % clockwise
@@ -86,26 +86,35 @@ for no = 2:fnode-1
     end
 end
 
+disp('------Simulation-Starts-------');
 disp(strcat('createRandPolymer: ', num2str(fp)));
-
+disp('--trials--');
 end
 
-function [fPnew, ffin] = twistLoopSeries(fp, fPc, fPt, fa, fL, fangle)
+function [fPnew, ffin] = twistLoopSeries(ft, fp, fPc, fPt, fa, fL, fangle, fHc, fHt)
 % To twist node by node till formed a loop
 
 fPnew = fp;
-ffin = 0;
-while HTdist(fPnew, fL, fangle) < fa
-    for no = 2:length(fp)-1
+
+while HTdist(fPnew, fL, fangle) > fa
+    
+    
+    for no = start:length(fp)-1
         Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
-        Pchange = pE(Phypo)/(pE(Phypo)+pE(fPnew))
-        if rand() < Pchange
+        Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
+        if rand() < Pchg
             fPnew(no:end) = -fPnew(no:end);      % change state
         end
+        if HTdist(fPnew, fL, fangle) < fa
+            break;
+        end
+        ffin = ffin+1;
     end
-    ffin = ffin+1;
+    
 end
 
+
+disp(strcat('T-',num2str(ft),'-------------'));
 disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish time: ', num2str(ffin)));
 disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
@@ -124,8 +133,10 @@ function fE = pE(fp, fHc, fHt)
 
 fE = 0;
 fs = diag(fp(2:length(fp)-2).'*fp(3:length(fp)-1));
-for no = 1:length(fp)-2
+
+for no = 1:length(fp)-3
     if fs(no) == 1
+        
         fE = fE + fHc;      % cis
     else
         fE = fE + fHt;     % trans

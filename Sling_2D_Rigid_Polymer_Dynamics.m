@@ -95,17 +95,25 @@ function [fPnew, ffin] = twistLoopSeries(ft, fp, fPc, fPt, fa, fL, fangle, fHc, 
 % To twist node by node till formed a loop
 
 fPnew = fp;
-ffin = 0;
+
+ffin = 1;
+
 while HTdist(fPnew, fL, fangle) > fa
+    
     for no = 2:length(fp)-1
         Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
         Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
         if rand() < Pchg
             fPnew(no:end) = -fPnew(no:end);      % change state
         end
+        if HTdist(fPnew, fL, fangle) < fa
+            break;
+        end
+        ffin = ffin+1;
     end
-    ffin = ffin+1;
+    
 end
+
 
 disp(strcat('T-',num2str(ft),'-------------'));
 disp(strcat('final state: ', num2str(fPnew)));
