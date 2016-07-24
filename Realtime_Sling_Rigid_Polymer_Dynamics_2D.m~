@@ -15,9 +15,9 @@ rng(2);                 % randomizer
 
 trial = 100;              % trials
 %twist = 200;            % change of state
-node = 100;               % nodes of rigid polymer
+node = 12;               % nodes of rigid polymer
 
-angle = 0.2;           % in rad, angle changed in each twist
+angle = 0.3;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
@@ -58,7 +58,7 @@ end
 
 fig = figure;
 hist(pF);
-title(strcat('Hist for ', num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+title(strcat('Hist for ', num2str(node),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
 pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/Hist-';
 filename = strcat(pathName, num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
@@ -132,7 +132,8 @@ disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 while HTdist(fPnew, fL, fangle) > fa
     
     for no = 2:length(fp)-1
-        Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
+        %        Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
+        Phypo = [fPnew(1:no-1), -fPnew(no), fPnew(no+1:end)];    % hypothetical change
         Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
         if rand() < Pchg
             fPnew(no:end) = -fPnew(no:end);      % change state
@@ -166,7 +167,7 @@ while HTdist(fPnew, fL, fangle) > fa
         yl2 = yc(1)*0.23+yc(2)*0.77;
         text(xl,yl1,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
         text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
-
+        
         drawnow;
         %pause(0.002)
         
@@ -214,46 +215,47 @@ disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
 while HTdist(fPnew, fL, fangle) > fa
     
-        no =  randsample(2:length(fp)-1,1);
-        
-        Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
-        Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
-        if rand() < Pchg
-            fPnew(no:end) = -fPnew(no:end);      % change state
-        end
-        if HTdist(fPnew, fL, fangle) < fa
-            break;
-        end
-        
-        ffin = ffin+1;
-        stair = ffin;
-        if ffin > length(fp)-1
-            stair = length(fp)-1;
-        end
-        
-        fv = visV(buildV(fPnew, fL, fangle));
-        xt = fv(1,:);
-        yt = fv(2,:);
-        
-        plot(xt(1:stair), yt(1:stair));
-        title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
-        grid;
-        xlmin = min(min(xt),xlmin);
-        xlmax = max(max(xt),xlmax);
-        ylmin = min(min(yt),ylmin);
-        ylmax = max(max(yt),ylmax);
-        axis([ xlmin, xlmax, ylmin, ylmax]);
-        xc = xlim;
-        xl = xc(1)*0.2+xc(2)*0.8;
-        yc = ylim;
-        yl1 = yc(1)*0.17+yc(2)*0.83;
-        yl2 = yc(1)*0.23+yc(2)*0.77;
-        text(xl,yl1,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
-        text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
-        drawnow;
-        %pause(0.002)
-        
-        disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
+    no =  randsample(2:length(fp)-1,1);
+    
+    %        Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
+    Phypo = [fPnew(1:no-1), -fPnew(no), fPnew(no+1:end)];    % hypothetical change
+    Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
+    if rand() < Pchg
+        fPnew(no:end) = -fPnew(no:end);      % change state
+    end
+    if HTdist(fPnew, fL, fangle) < fa
+        break;
+    end
+    
+    ffin = ffin+1;
+    stair = ffin;
+    if ffin > length(fp)-1
+        stair = length(fp)-1;
+    end
+    
+    fv = visV(buildV(fPnew, fL, fangle));
+    xt = fv(1,:);
+    yt = fv(2,:);
+    
+    plot(xt(1:stair), yt(1:stair));
+    title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
+    grid;
+    xlmin = min(min(xt),xlmin);
+    xlmax = max(max(xt),xlmax);
+    ylmin = min(min(yt),ylmin);
+    ylmax = max(max(yt),ylmax);
+    axis([ xlmin, xlmax, ylmin, ylmax]);
+    xc = xlim;
+    xl = xc(1)*0.2+xc(2)*0.8;
+    yc = ylim;
+    yl1 = yc(1)*0.17+yc(2)*0.83;
+    yl2 = yc(1)*0.23+yc(2)*0.77;
+    text(xl,yl1,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+    text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
+    drawnow;
+    %pause(0.002)
+    
+    disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     
 end
 
@@ -306,8 +308,8 @@ function fm = buildV(fp, fL, fangle)
 fx = ones(1, length(fp)-1)*fL;
 fy = zeros(1, length(fp)-1);
 fm = [fx;fy];
-rot1 = [cos(fangle) -sin(fangle); sin(fangle) cos(fangle)];
-rot2 = [cos(-fangle) -sin(-fangle); sin(-fangle) cos(-fangle)];
+rot1 = [cos(fangle) -sin(fangle); sin(fangle) cos(fangle)]; % clockwise
+rot2 = [cos(-fangle) -sin(-fangle); sin(-fangle) cos(-fangle)]; % counterclockwise
 
 for no = 2:length(fp)-1
     if fp(no) == 1
