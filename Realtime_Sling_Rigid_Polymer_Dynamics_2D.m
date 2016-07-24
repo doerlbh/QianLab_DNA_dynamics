@@ -19,7 +19,7 @@ node = 13;               % nodes of rigid polymer
 
 angle = 0.3;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
-a = 5;                 % threshold to form loop
+a = 2;                 % threshold to form loop
 
 %T = 300;                % temperature (K)
 %k = 1.38064852e-23;     % Boltzmann constant (J/K)
@@ -223,7 +223,7 @@ while HTdist(fPnew, fL, fangle) > fa
     Phypo = [fPnew(1:no-1), -fPnew(no), fPnew(no+1:end)];    % hypothetical change
     Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
     if rand() < Pchg
-        fPnew(no:end) = -fPnew(no:end);      % change state
+        fPnew = Phypo;      % change state
     end
     if HTdist(fPnew, fL, fangle) < fa
         break;
@@ -257,7 +257,7 @@ while HTdist(fPnew, fL, fangle) > fa
     text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
     drawnow;
     
-    pause(0.3)
+    pause(0.6)
     
     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     
