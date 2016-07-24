@@ -7,7 +7,7 @@ clear all;
 close all;
 
 global pathN;
-pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/';
+pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/';
 
 %% Initialization
 
