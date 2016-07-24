@@ -15,11 +15,11 @@ rng(2);                 % randomizer
 
 trial = 100;              % trials
 %twist = 200;            % change of state
-node = 12;               % nodes of rigid polymer
+node = 13;               % nodes of rigid polymer
 
 angle = 0.3;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
-a = 10;                 % threshold to form loop
+a = 5;                 % threshold to form loop
 
 %T = 300;                % temperature (K)
 %k = 1.38064852e-23;     % Boltzmann constant (J/K)
@@ -230,10 +230,11 @@ while HTdist(fPnew, fL, fangle) > fa
     end
     
     ffin = ffin+1;
-    stair = ffin;
-    if ffin > length(fp)-1
+    
+%     stair = ffin;
+%     if ffin > length(fp)-1
         stair = length(fp)-1;
-    end
+%     end
     
     fv = visV(buildV(fPnew, fL, fangle));
     xt = fv(1,:);
@@ -256,7 +257,7 @@ while HTdist(fPnew, fL, fangle) > fa
     text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
     drawnow;
     
-    %pause(0.03)
+    pause(0.3)
     
     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     
