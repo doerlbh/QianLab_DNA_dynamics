@@ -12,14 +12,14 @@ rng(1234);                 % randomizer
 
 trial = 1000;              % trials
 %twist = 200;            % change of state
-node = 300;               % nodes of rigid polymer
+node = 400;               % nodes of rigid polymer
 
 global pathN;
 pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/',num2str(node),'/');
 
 system(['mkdir ' pathN]);
 
-angle = 0.3;           % in rad, angle changed in each twist
+angle = 0.2;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
