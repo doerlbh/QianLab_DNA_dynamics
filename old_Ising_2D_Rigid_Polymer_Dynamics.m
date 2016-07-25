@@ -1,4 +1,4 @@
-% Sling_Rigid_Polymer_Dynamics_2D
+% Static_Time_Sling_Rigid_Polymer_Dynamics_2D
 % To simulate the dynamics of a rigid polymer by Sling model in 2D
 % by Baihan Lin, Qian Lab
 % July 2016

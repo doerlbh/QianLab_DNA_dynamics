@@ -67,7 +67,7 @@ end
 fig1 = figure;
 histogram(pTf, 'BinWidth', 1);
 title(strcat('Time Histogram for ', num2str(node),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
-pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/Hist-';
+pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/T-Hist-';
 filename = strcat(pathName, num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 close gcf;
@@ -76,7 +76,7 @@ fig2 = figure;
 histogram(pEf, 'BinWidth', 1);
 line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('Energy Histogram for ', num2str(node),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
-pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/Hist-';
+pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/E-Hist-';
 filename = strcat(pathName, num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 close gcf;
@@ -85,7 +85,7 @@ fig3 = figure;
 histogram(pDf, 'BinWidth', 1);
 line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('HTdistance Histogram for ', num2str(node),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
-pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/Hist-';
+pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/D-Hist-';
 filename = strcat(pathName, num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 close gcf;
@@ -178,7 +178,7 @@ while HTdist(fPnew, fL, fangle) > fa
     yt = fv(2,:);
     
     plot(xt(1:stair), yt(1:stair));
-    title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
+    title(strcat('Simulation of T',num2str(ft),'-',num2str(length(fp)),' node rigid polymer dynamics'));
     grid;
     xlmin = min(min(xt),xlmin);
     xlmax = max(max(xt),xlmax);
@@ -202,7 +202,7 @@ end
 
 fHTd = HTdist(fPnew, fL, fangle);
 
-path ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/';
+path ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/';
 filename = strcat(path, num2str(length(fp)),'node-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 close gcf;
