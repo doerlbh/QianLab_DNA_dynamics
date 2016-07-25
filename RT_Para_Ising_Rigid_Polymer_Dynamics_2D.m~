@@ -86,7 +86,7 @@ saveas(gcf, filename,'png');
 fig2 = figure;
 histogram(pEf(2:trial+1), 'BinWidth', 0.05);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
-title(strcat('Energy Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)));
+title(strcat('Energy Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)));
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
@@ -101,7 +101,7 @@ saveas(gcf, filename,'png');
 fig3 = figure;
 histogram(pDf(2:trial+1), 'BinWidth', 0.05);
 % line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
-title(strcat('HTdistance Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
+title(strcat('HTdistance Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
