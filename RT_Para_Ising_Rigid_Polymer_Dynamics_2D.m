@@ -1,4 +1,4 @@
-% Realtime_Ising_Rigid_Polymer_Dynamics_2D_in_Glauber
+% Realtime_Ising_Rigid_Polymer_Dynamics_2D_in_parallel
 % To simulate the dynamics of a rigid polymer by Sling model in 2D
 % by Baihan Lin, Qian Lab
 % July 2016
@@ -101,7 +101,7 @@ else
     fp(2:fnode-1) = -1;     % counterclockwise
 end
 
-parfor no = 3:fnode-1
+for no = 3:fnode-1
     if rand() > fPc
         fp(no:fnode-1) = -fp(no:fnode-1);      % trans
     end
@@ -148,6 +148,7 @@ xlmax = max(xt);
 ylmin = min(yt);
 ylmax = max(yt);
 axis([ xlmin, xlmax, ylmin, ylmax]);
+quiver(0, 0, xt(stair), yt(stair),0,'r');
 grid;
 xlabel 'x';
 ylabel 'y';
@@ -160,7 +161,6 @@ while HTdist(fPnew, fL, fangle) > fa
     
     no =  randsample(2:length(fp)-1,1);
     
-    %        Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
     Phypo = [fPnew(1:no-1), -fPnew(no), fPnew(no+1:end)];    % hypothetical change
     Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
     if rand() < Pchg
@@ -172,7 +172,7 @@ while HTdist(fPnew, fL, fangle) > fa
     
     ffin = ffin+1;
     
-    stair = length(fp)-1;    
+    stair = length(fp)-1;
     fv = visV(buildV(fPnew, fL, fangle));
     xt = fv(1,:);
     yt = fv(2,:);
@@ -185,6 +185,7 @@ while HTdist(fPnew, fL, fangle) > fa
     ylmin = min(min(yt),ylmin);
     ylmax = max(max(yt),ylmax);
     axis([ xlmin, xlmax, ylmin, ylmax]);
+    quiver(0, 0, xt(stair), yt(stair),0,'r');
     xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
@@ -194,7 +195,7 @@ while HTdist(fPnew, fL, fangle) > fa
     text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
     drawnow;
     
-%     pause(0.6)
+    %     pause(0.6)
     
     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     
@@ -204,7 +205,7 @@ fHTd = HTdist(fPnew, fL, fangle);
 
 path ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/';
 filename = strcat(path, num2str(length(fp)),'node-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
-saveas(gcf, filename,'png');
+parsaveas(gcf, filename,'png');
 close gcf;
 
 disp(strcat('final state: ', num2str(fPnew)));
@@ -248,7 +249,7 @@ fm = [fx;fy];
 rot1 = [cos(fangle) -sin(fangle); sin(fangle) cos(fangle)]; % clockwise
 rot2 = [cos(-fangle) -sin(-fangle); sin(-fangle) cos(-fangle)]; % counterclockwise
 
-parfor no = 2:length(fp)-1
+for no = 2:length(fp)-1
     if fp(no) == 1
         fm(:,no:end) = rot1*fm(:,no:end);       % clockwise
     else
