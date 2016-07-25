@@ -15,7 +15,7 @@ rng(378);                 % randomizer
 
 trial = 100;              % trials
 %twist = 200;            % change of state
-node = 150;               % nodes of rigid polymer
+node = 200;               % nodes of rigid polymer
 
 angle = 0.3;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
@@ -64,31 +64,35 @@ parfor n = 2:trial+1
     pDf(n) = HTd;
 end
 
+
+%% plot histograms
+
 fig1 = figure;
-histogram(pTf, 'BinWidth', 1);
-title(strcat('Time Histogram for ', num2str(node),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+histogram(pTf, 'BinWidth', 50);
+title(strcat('Time Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/T-Hist-';
-filename = strcat(pathName, num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(pathName, num2str(length(p)),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle),'.png');
 saveas(gcf, filename,'png');
-close gcf;
+%close gcf;
 
 fig2 = figure;
-histogram(pEf, 'BinWidth', 1);
-line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
-title(strcat('Energy Histogram for ', num2str(node),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+histogram(pEf, 'BinWidth', 0.1);
+% line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
+title(strcat('Energy Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/E-Hist-';
-filename = strcat(pathName, num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(pathName, num2str(length(p)),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle),'.png');
 saveas(gcf, filename,'png');
-close gcf;
+%close gcf;
 
 fig3 = figure;
 histogram(pDf, 'BinWidth', 1);
-line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
-title(strcat('HTdistance Histogram for ', num2str(node),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+% line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
+title(strcat('HTdistance Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/D-Hist-';
-filename = strcat(pathName, num2str(length(fp)),'node,'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(pathName, num2str(length(p)),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle),'.png');
 saveas(gcf, filename,'png');
-close gcf;
+%close gcf;
+
 
 %% Local functions
 
