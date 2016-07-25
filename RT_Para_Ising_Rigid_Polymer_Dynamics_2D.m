@@ -70,7 +70,7 @@ end
 %% plot histograms
 
 fig1 = figure;
-histogram(pTf(2:trial+1), 'BinWidth', 50);
+histogram(pTf(2:trial+1), 'BinWidth', 20);
 title(strcat('Time Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
@@ -84,7 +84,7 @@ saveas(gcf, filename,'png');
 %close gcf;
 
 fig2 = figure;
-histogram(pEf(2:trial+1), 'BinWidth', 0.1);
+histogram(pEf(2:trial+1), 'BinWidth', 0.05);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('Energy Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)));
 xc = xlim;
@@ -99,7 +99,7 @@ saveas(gcf, filename,'png');
 %close gcf;
 
 fig3 = figure;
-histogram(pDf(2:trial+1), 'BinWidth', 0.2);
+histogram(pDf(2:trial+1), 'BinWidth', 0.05);
 % line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('HTdistance Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 xc = xlim;
@@ -179,7 +179,7 @@ ylabel 'y';
 title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
 text(0,0,strcat('ffin',num2str(ffin)));
 
-disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
+% disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
 while HTdist(fPnew, fL, fangle) > fa
     
