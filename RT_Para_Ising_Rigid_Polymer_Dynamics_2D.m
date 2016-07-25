@@ -8,14 +8,16 @@ close all;
 
 %% Initialization
 
-rng(378);                 % randomizer
+rng(1234);                 % randomizer
 
 trial = 1000;              % trials
 %twist = 200;            % change of state
 node = 300;               % nodes of rigid polymer
 
 global pathN;
-pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/',num2str(node),'/';
+pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/',num2str(node),'/');
+
+system(['mkdir ' pathN]);
 
 angle = 0.3;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
@@ -225,7 +227,7 @@ end
 
 fHTd = HTdist(fPnew, fL, fangle);
 
-filename = strcat(fpath, num2str(length(fp)),'node-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(fpath, 'N',num2str(length(fp)),'-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 parsaveas(gcf, filename,'png');
 close gcf;
 
