@@ -12,7 +12,7 @@ rng(1234);                 % randomizer
 
 trial = 1000;              % trials
 %twist = 200;            % change of state
-node = 400;               % nodes of rigid polymer
+node = 500;               % nodes of rigid polymer
 
 global pathN;
 pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/',num2str(node),'/');
@@ -70,7 +70,7 @@ end
 %% plot histograms
 
 fig1 = figure;
-histogram(pTf(2:trial+1), 'BinWidth', 20);
+histogram(pTf(2:trial+1), 'BinWidth', 50);
 title(strcat('Time Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
@@ -84,7 +84,7 @@ saveas(gcf, filename,'png');
 %close gcf;
 
 fig2 = figure;
-histogram(pEf(2:trial+1), 'BinWidth', 0.05);
+histogram(pEf(2:trial+1), 'BinWidth', 0.1);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('Energy Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)));
 xc = xlim;
@@ -99,7 +99,7 @@ saveas(gcf, filename,'png');
 %close gcf;
 
 fig3 = figure;
-histogram(pDf(2:trial+1), 'BinWidth', 0.05);
+histogram(pDf(2:trial+1), 'BinWidth', 0.1);
 % line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('HTdistance Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 xc = xlim;
@@ -160,24 +160,24 @@ disp(strcat('T-',num2str(ft),'-------------'));
 fPnew = fp;
 ffin = 1;
 
-stair = length(fp)-1;
-
-fig = figure;
-fv = visV(buildV(fPnew, fL, fangle));
-xt = fv(1,:);
-yt = fv(2,:);
-plot(xt(1:stair), yt(1:stair));
-xlmin = min(xt);
-xlmax = max(xt);
-ylmin = min(yt);
-ylmax = max(yt);
-axis([ xlmin, xlmax, ylmin, ylmax]);
-% quiver(0, 0, xt(stair), yt(stair),0,'r');
-grid;
-xlabel 'x';
-ylabel 'y';
-title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
-text(0,0,strcat('ffin',num2str(ffin)));
+% stair = length(fp)-1;
+% 
+% fig = figure;
+% fv = visV(buildV(fPnew, fL, fangle));
+% xt = fv(1,:);
+% yt = fv(2,:);
+% plot(xt(1:stair), yt(1:stair));
+% xlmin = min(xt);
+% xlmax = max(xt);
+% ylmin = min(yt);
+% ylmax = max(yt);
+% axis([ xlmin, xlmax, ylmin, ylmax]);
+% % quiver(0, 0, xt(stair), yt(stair),0,'r');
+% grid;
+% xlabel 'x';
+% ylabel 'y';
+% title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
+% text(0,0,strcat('ffin',num2str(ffin)));
 
 % disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
@@ -196,28 +196,28 @@ while HTdist(fPnew, fL, fangle) > fa
     
     ffin = ffin+1;
     
-    stair = length(fp)-1;
-    fv = visV(buildV(fPnew, fL, fangle));
-    xt = fv(1,:);
-    yt = fv(2,:);
-    
-    plot(xt(1:stair), yt(1:stair));
-    title(strcat('Simulation of T',num2str(ft),'-',num2str(length(fp)),' node rigid polymer dynamics'));
-    grid;
-    xlmin = min(min(xt),xlmin);
-    xlmax = max(max(xt),xlmax);
-    ylmin = min(min(yt),ylmin);
-    ylmax = max(max(yt),ylmax);
-    axis([ xlmin, xlmax, ylmin, ylmax]);
-%     quiver(0, 0, xt(stair), yt(stair),0,'r');
-    xc = xlim;
-    xl = xc(1)*0.2+xc(2)*0.8;
-    yc = ylim;
-    yl1 = yc(1)*0.17+yc(2)*0.83;
-    yl2 = yc(1)*0.23+yc(2)*0.77;
-    text(xl,yl1,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
-    text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
-    drawnow;
+%     stair = length(fp)-1;
+%     fv = visV(buildV(fPnew, fL, fangle));
+%     xt = fv(1,:);
+%     yt = fv(2,:);
+%     
+%     plot(xt(1:stair), yt(1:stair));
+%     title(strcat('Simulation of T',num2str(ft),'-',num2str(length(fp)),' node rigid polymer dynamics'));
+%     grid;
+%     xlmin = min(min(xt),xlmin);
+%     xlmax = max(max(xt),xlmax);
+%     ylmin = min(min(yt),ylmin);
+%     ylmax = max(max(yt),ylmax);
+%     axis([ xlmin, xlmax, ylmin, ylmax]);
+% %     quiver(0, 0, xt(stair), yt(stair),0,'r');
+%     xc = xlim;
+%     xl = xc(1)*0.2+xc(2)*0.8;
+%     yc = ylim;
+%     yl1 = yc(1)*0.17+yc(2)*0.83;
+%     yl2 = yc(1)*0.23+yc(2)*0.77;
+%     text(xl,yl1,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+%     text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
+%     drawnow;
     
     %     pause(0.6)
     
@@ -227,9 +227,9 @@ end
 
 fHTd = HTdist(fPnew, fL, fangle);
 
-filename = strcat(fpath, 'N',num2str(length(fp)),'-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
-parsaveas(gcf, filename,'png');
-close gcf;
+% filename = strcat(fpath, 'N',num2str(length(fp)),'-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+% parsaveas(gcf, filename,'png');
+% close gcf;
 
 disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish time: ', num2str(ffin)));
