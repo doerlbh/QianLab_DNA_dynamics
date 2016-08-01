@@ -18,9 +18,9 @@ global pathN;
 pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
 system(['mkdir ' pathN]);
 
-angle = 0.1;           % in rad, angle changed in each twist
+angle = 0.5;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
-a = 10;                 % threshold to form loop
+a = 30;                 % threshold to form loop
 
 Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
 Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
@@ -64,7 +64,7 @@ end
 %% plot histograms
 
 fig1 = figure;
-histogram(pTf(2:trial+1), 'BinWidth', 2);
+histogram(pTf(2:trial+1), 'BinWidth', 50);
 title(strcat('Time Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
@@ -78,7 +78,7 @@ saveas(gcf, filename,'png');
 %close gcf;
 
 fig2 = figure;
-histogram(pEf(2:trial+1), 'BinWidth', 0.01);
+histogram(pEf(2:trial+1), 'BinWidth', 0.2);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('Energy Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)));
 xc = xlim;
@@ -93,7 +93,7 @@ saveas(gcf, filename,'png');
 %close gcf;
 
 fig3 = figure;
-histogram(pDf(2:trial+1), 'BinWidth', 0.01);
+histogram(pDf(2:trial+1), 'BinWidth', 0.2);
 % line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('HTdistance Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 xc = xlim;
@@ -304,9 +304,9 @@ for no = 2:length(fp)-1
         w = ax(3);
         
         if fp(no) == 1
-            ang = pi/3; % CCW
+            ang = 2*pi/3; % CCW
         else
-            ang = 2*pi/3; % CW
+            ang = 4*pi/3; % CW
         end
         rot = [u^2+(1-u^2)*cos(ang), u*v*(1-cos(ang))-w*sin(ang), u*w*(1-cos(ang))+v*sin(ang);
             u*v*(1-cos(ang))+w*sin(ang), v^2+(1-v^2)*cos(ang), v*w*(1-cos(ang))-u*sin(ang);

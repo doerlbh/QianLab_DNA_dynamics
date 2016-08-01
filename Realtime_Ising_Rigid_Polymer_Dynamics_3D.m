@@ -301,9 +301,9 @@ for no = 2:length(fp)-1
         w = ax(3);
         
         if fp(no) == 1
-            ang = pi/3; % CCW
+            ang = 2*pi/3; % CCW
         else
-            ang = 2*pi/3; % CW
+            ang = 4*pi/3; % CW
         end
         rot = [u^2+(1-u^2)*cos(ang), u*v*(1-cos(ang))-w*sin(ang), u*w*(1-cos(ang))+v*sin(ang);
             u*v*(1-cos(ang))+w*sin(ang), v^2+(1-v^2)*cos(ang), v*w*(1-cos(ang))-u*sin(ang);
