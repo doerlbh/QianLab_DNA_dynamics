@@ -28,7 +28,7 @@ b = 1;      % redefined beta based on H
 Pc = exp(-b*Hc)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of cis change
 Pc2 = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*Ht))
 Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
-Pt2 = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*Ht)); 
+Pt2 = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*Ht));
 
 %% Generate a polymer
 
@@ -95,10 +95,15 @@ function fp = createRandPolymer(fnode)
 fp = zeros(1,fnode);
 
 for no = 2:fnode-1
-    if rand() > 0.5
-        fp(no) = 1;      % flip to cis
+    r = rand()
+    if r < 1/3
+        fp(no) = 0;      % not flip, stay trans
     else
-        fp(no) = -1;     % not flip, stay trans
+        if 1/3 < r < 2/3
+            fp(no) = 1;     % flip to cis CCW
+        else
+            fp(no) = -1;     % flip to cis CW
+        end
     end
 end
 
@@ -121,16 +126,20 @@ fig = figure;
 fv = visV(buildV(fPnew, fL, fangle));
 xt = fv(1,:);
 yt = fv(2,:);
+zt = fv(3,:);
 plot(xt(1:stair), yt(1:stair));
 xlmin = min(xt);
 xlmax = max(xt);
 ylmin = min(yt);
 ylmax = max(yt);
-axis([ xlmin, xlmax, ylmin, ylmax]);
+zlmin = min(zt);
+zlmax = max(zt);
+axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
 grid;
 xlabel 'x';
 ylabel 'y';
-title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
+zlabel 'z';
+title(strcat('3D Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
 text(0,0,strcat('ffin',num2str(ffin)));
 
 disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
@@ -139,8 +148,8 @@ while HTdist(fPnew, fL, fangle) > fa
     
     no =  randsample(2:length(fp)-1,1);
     
-    %        Phypo = [fPnew(1:no-1), -fPnew(no:end)];    % hypothetical change
-    Phypo = [fPnew(1:no-1), -fPnew(no), fPnew(no+1:end)];    % hypothetical change
+    Pno = randFlip(fPnew(no));
+    Phypo = [fPnew(1:no-1), Pno, fPnew(no+1:end)];    % hypothetical change
     
     Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
     if rand() < Pchg
@@ -152,19 +161,25 @@ while HTdist(fPnew, fL, fangle) > fa
     
     ffin = ffin+1;
     
-    stair = length(fp)-1;    
+    stair = length(fp)-1;
     fv = visV(buildV(fPnew, fL, fangle));
     xt = fv(1,:);
     yt = fv(2,:);
     
-    plot(xt(1:stair), yt(1:stair));
-    title(strcat('Simulation of T',num2str(ft),'-',num2str(length(fp)),' node rigid polymer dynamics'));
+    plot3(xt(1:stair), yt(1:stair),yt(1:stair));
     grid;
     xlmin = min(min(xt),xlmin);
     xlmax = max(max(xt),xlmax);
     ylmin = min(min(yt),ylmin);
     ylmax = max(max(yt),ylmax);
-    axis([ xlmin, xlmax, ylmin, ylmax]);
+    zlmin = min(zt);
+    zlmax = max(zt);
+    axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+    grid;
+    xlabel 'x';
+    ylabel 'y';
+    zlabel 'z';
+    title(strcat('3D Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));axis([ xlmin, xlmax, ylmin, ylmax]);
     xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
@@ -174,7 +189,7 @@ while HTdist(fPnew, fL, fangle) > fa
     text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
     drawnow;
     
-%     pause(0.6)
+    %     pause(0.6)
     
     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     
@@ -190,6 +205,26 @@ close gcf;
 disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish time: ', num2str(ffin)));
 disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
+
+end
+
+function fPno = randFlip(fn)
+% To randomly flip
+
+r = rand();
+if fn == 0
+    if r < 0.5
+        fPno = 1;
+    else
+        fPno = -1;
+    end
+else
+    if r < 0.5
+        fPno = 0;
+    else
+        fPno = -fn;
+    end
+end
 
 end
 

@@ -126,17 +126,20 @@ fig = figure;
 fv = visV(buildV(fPnew, fL, fangle));
 xt = fv(1,:);
 yt = fv(2,:);
-plot(xt(1:stair), yt(1:stair));
+zt = fv(3,:);
+plot3(xt(1:stair), yt(1:stair),zt(1:stair));
 xlmin = min(xt);
 xlmax = max(xt);
 ylmin = min(yt);
 ylmax = max(yt);
-axis([ xlmin, xlmax, ylmin, ylmax]);
+zlmin = min(zt);
+zlmax = max(zt);
+axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
 grid;
 xlabel 'x';
 ylabel 'y';
-title(strcat('Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
-text(0,0,strcat('ffin',num2str(ffin)));
+zlabel 'z';
+title(strcat('3D Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
 
 disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
@@ -161,25 +164,34 @@ while HTdist(fPnew, fL, fangle) > fa
     fv = visV(buildV(fPnew, fL, fangle));
     xt = fv(1,:);
     yt = fv(2,:);
+    zt = fv(3,:);
     
-    plot(xt(1:stair), yt(1:stair));
-    title(strcat('Simulation of T',num2str(ft),'-',num2str(length(fp)),' node rigid polymer dynamics'));
+    plot3(xt(1:stair), yt(1:stair),zt(1:stair));
     grid;
     xlmin = min(min(xt),xlmin);
     xlmax = max(max(xt),xlmax);
     ylmin = min(min(yt),ylmin);
     ylmax = max(max(yt),ylmax);
-    axis([ xlmin, xlmax, ylmin, ylmax]);
+    zlmin = min(min(zt),zlmin);
+    zlmax = max(max(zt),zlmax);
+    axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+    xlabel 'x';
+    ylabel 'y';
+    zlabel 'z';
+    title(strcat('3D Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));axis([ xlmin, xlmax, ylmin, ylmax]);
     xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
     yl1 = yc(1)*0.17+yc(2)*0.83;
     yl2 = yc(1)*0.23+yc(2)*0.77;
-    text(xl,yl1,strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
-    text(xl,yl2,strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
+    zc = xlim;
+    zl = zc(1)*0.2+zc(2)*0.8;
+
+    text(xl,yl1,zl, strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+    text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
     drawnow;
     
-    %     pause(0.6)
+    %   pause(0.6)
     
     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     
