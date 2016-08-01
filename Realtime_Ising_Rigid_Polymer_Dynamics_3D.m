@@ -6,21 +6,18 @@
 clear all;
 close all;
 
-% global pathN;
-% pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/';
+global pathN;
+pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
+system(['mkdir ' pathN]);
 
 %% Initialization
 
 rng(378);                 % randomizer
 
-trial = 10;              % trials
-%twist = 200;            % change of state
-node = 150;               % nodes of rigid polymer
+trial = 100;              % trials
+node = 100;               % nodes of rigid polymer
 
-global pathN;
-pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
-
-angle = 0.3;           % in rad, angle changed in each twist
+angle = 0.5;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
@@ -29,7 +26,7 @@ Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 b = 1;      % redefined beta based on H
 
 Pc = exp(-b*Hc)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of cis change
-Pc2 = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*Ht))
+Pc2 = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*Ht));
 Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
 Pt2 = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*Ht));
 
@@ -118,7 +115,7 @@ fp = zeros(1,fnode);
 fp(2) = 0;
 
 for no = 3:fnode-1
-    r = rand()
+    r = rand();
     if r < 1/3
         fp(no) = 0;      % not flip, stay trans
     else
@@ -150,7 +147,7 @@ fv = visV(buildV(fPnew, fL, fangle));
 xt = fv(1,:);
 yt = fv(2,:);
 zt = fv(3,:);
-plot3(xt(1:stair), yt(1:stair),zt(1:stair));
+plot3(xt(1:stair),yt(1:stair),zt(1:stair));
 xlmin = min(xt);
 xlmax = max(xt);
 ylmin = min(yt);
@@ -184,12 +181,13 @@ while HTdist(fPnew, fL, fangle) > fa
     ffin = ffin+1;
     
     stair = length(fp)-1;
+    
     fv = visV(buildV(fPnew, fL, fangle));
     xt = fv(1,:);
     yt = fv(2,:);
     zt = fv(3,:);
     
-    plot3(xt(1:stair), yt(1:stair),zt(1:stair));
+    plot3(xt(1:stair), yt(1:stair), zt(1:stair));
     grid;
     xlmin = min(min(xt),xlmin);
     xlmax = max(max(xt),xlmax);
@@ -201,20 +199,20 @@ while HTdist(fPnew, fL, fangle) > fa
     xlabel 'x';
     ylabel 'y';
     zlabel 'z';
-    title(strcat('3D Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));axis([ xlmin, xlmax, ylmin, ylmax]);
+    title(strcat('3D Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
     xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
-    yl1 = yc(1)*0.17+yc(2)*0.83;
-    yl2 = yc(1)*0.23+yc(2)*0.77;
-    zc = xlim;
+    yl1 = yc(1)*0.14+yc(2)*0.86;
+    yl2 = yc(1)*0.26+yc(2)*0.74;
+    zc = zlim;
     zl = zc(1)*0.2+zc(2)*0.8;
     
     text(xl,yl1,zl, strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
     drawnow;
     
-    %   pause(0.6)
+      pause(0.6)
     
     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     
@@ -278,16 +276,18 @@ end
 function fm = buildV(fp, fL, fangle)
 % To build a vector set (matrix) based on given polymer states
 
-ftrans = ones(1, fnode-2);
-for count = 2:fnode-2
+ftrans = ones(1, length(fp)-2);
+for count = 2:length(fp)-2
     ftrans(count) = -ftrans(count-1);
 end
-
 fm2D = build2DV([0, ftrans, 0], fL, fangle);
 
 fx = fm2D(1,:);
 fy = fm2D(2,:);
 fz = zeros(1, length(fp)-1);
+% length(fx)
+% length(fy)
+% length(fz)
 
 fm = [fx;fy;fz];
 
