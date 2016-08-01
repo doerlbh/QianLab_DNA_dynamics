@@ -10,15 +10,14 @@ close all;
 
 rng(378);                 % randomizer
 
-trial = 10;              % trials
-%twist = 200;            % change of state
-node = 150;               % nodes of rigid polymer
+trial = 100;              % trials
+node = 200;               % nodes of rigid polymer
 
 global pathN;
 pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
 system(['mkdir ' pathN]);
 
-angle = 0.3;           % in rad, angle changed in each twist
+angle = 0.05;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
@@ -137,6 +136,7 @@ function [fPnew, fHTd, ffin] = twistLoopRand(fpath, ft, fp, fPc, fPt, fa, fL, fa
 % To twist randomly till formed a loop
 
 disp(strcat('T-',num2str(ft),'-------------'));
+HTdist(fp, fL, fangle)
 
 fPnew = fp;
 ffin = 1;
@@ -295,7 +295,7 @@ fm = [fx;fy;fz];
 for no = 2:length(fp)-1
     if fp(no) == 0
     else
-        ax = fm(:,no-1);
+        ax = fm(:,no-1)/norm(fm(:,no-1));
         u = ax(1);
         v = ax(2);
         w = ax(3);

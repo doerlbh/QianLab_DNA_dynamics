@@ -12,13 +12,13 @@ rng(378);                 % randomizer
 
 trial = 500;              % trials
 %twist = 200;            % change of state
-node = 100;               % nodes of rigid polymer
+node = 200;               % nodes of rigid polymer
 
 global pathN;
 pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
 system(['mkdir ' pathN]);
 
-angle = 0.5;           % in rad, angle changed in each twist
+angle = 0.1;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
@@ -52,6 +52,7 @@ pTf(1) = 0;
 pEf(1) = pE(p, Hc, Ht);
 pDf(1) = HTdist(p, L, angle);
 
+% for n = 2:trial+1
 parfor n = 2:trial+1
     % To twist till looped
     [Pnew, HTd, fin] = twistLoopRand(pathN, n, p, Pc, Pt, a, L, angle, Hc, Ht);
@@ -63,7 +64,7 @@ end
 %% plot histograms
 
 fig1 = figure;
-histogram(pTf(2:trial+1), 'BinWidth', 50);
+histogram(pTf(2:trial+1), 'BinWidth', 2);
 title(strcat('Time Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
@@ -77,7 +78,7 @@ saveas(gcf, filename,'png');
 %close gcf;
 
 fig2 = figure;
-histogram(pEf(2:trial+1), 'BinWidth', 0.1);
+histogram(pEf(2:trial+1), 'BinWidth', 0.01);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('Energy Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)));
 xc = xlim;
@@ -92,7 +93,7 @@ saveas(gcf, filename,'png');
 %close gcf;
 
 fig3 = figure;
-histogram(pDf(2:trial+1), 'BinWidth', 0.1);
+histogram(pDf(2:trial+1), 'BinWidth', 0.01);
 % line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('HTdistance Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
 xc = xlim;
@@ -115,6 +116,7 @@ function fp = createRandPolymer(fnode)
 fp = zeros(1,fnode);
 fp(2) = 0;
 
+% for no = 3:fnode-1
 parfor no = 3:fnode-1
     r = rand();
     if r < 1/3
@@ -256,6 +258,7 @@ function fE = pE(fp, fHc, fHt)
 
 fE = 0;
 
+% for no = 3:length(fp)-1
 parfor no = 3:length(fp)-1
     if abs(fp(no)) == 1
         fE = fE + fHc;      % cis
@@ -295,7 +298,7 @@ fm = [fx;fy;fz];
 for no = 2:length(fp)-1
     if fp(no) == 0
     else
-        ax = fm(:,no-1);
+        ax = fm(:,no-1)/norm(fm(:,no-1));
         u = ax(1);
         v = ax(2);
         w = ax(3);
