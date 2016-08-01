@@ -6,18 +6,19 @@
 clear all;
 close all;
 
-global pathN;
-pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
-system(['mkdir ' pathN]);
-
 %% Initialization
 
 rng(378);                 % randomizer
 
-trial = 100;              % trials
-node = 100;               % nodes of rigid polymer
+trial = 10;              % trials
+%twist = 200;            % change of state
+node = 150;               % nodes of rigid polymer
 
-angle = 0.5;           % in rad, angle changed in each twist
+global pathN;
+pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
+system(['mkdir ' pathN]);
+
+angle = 0.3;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
@@ -212,7 +213,7 @@ while HTdist(fPnew, fL, fangle) > fa
     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
     drawnow;
     
-      pause(0.6)
+%       pause(0.6)
     
     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     

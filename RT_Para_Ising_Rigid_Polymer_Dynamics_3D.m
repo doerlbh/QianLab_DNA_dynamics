@@ -1,4 +1,4 @@
-% Realtime_Ising_Rigid_Polymer_Dynamics_3D
+% Realtime_Ising_Rigid_Polymer_Dynamics_3D_using_parallel
 % To simulate the dynamics of a rigid polymer by Sling model in 3D
 % by Baihan Lin, Qian Lab
 % July 2016
@@ -6,18 +6,19 @@
 clear all;
 close all;
 
-% global pathN;
-% pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/';
-
 %% Initialization
 
 rng(378);                 % randomizer
 
-trial = 10;              % trials
+trial = 500;              % trials
 %twist = 200;            % change of state
-node = 150;               % nodes of rigid polymer
+node = 100;               % nodes of rigid polymer
 
-angle = 0.3;           % in rad, angle changed in each twist
+global pathN;
+pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
+system(['mkdir ' pathN]);
+
+angle = 0.5;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 10;                 % threshold to form loop
 
@@ -26,7 +27,7 @@ Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 b = 1;      % redefined beta based on H
 
 Pc = exp(-b*Hc)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of cis change
-Pc2 = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*Ht))
+Pc2 = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*Ht));
 Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
 Pt2 = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*Ht));
 
@@ -51,9 +52,9 @@ pTf(1) = 0;
 pEf(1) = pE(p, Hc, Ht);
 pDf(1) = HTdist(p, L, angle);
 
-for n = 2:trial+1
+parfor n = 2:trial+1
     % To twist till looped
-    [Pnew, HTd, fin] = twistLoopRand(n, p, Pc, Pt, a, L, angle, Hc, Ht);
+    [Pnew, HTd, fin] = twistLoopRand(pathN, n, p, Pc, Pt, a, L, angle, Hc, Ht);
     pTf(n) = fin;
     pEf(n) = pE(Pnew, Hc, Ht);
     pDf(n) = HTd;
@@ -62,30 +63,49 @@ end
 %% plot histograms
 
 fig1 = figure;
-histogram(pTf, 'BinWidth', 50);
-title(strcat('Time Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
-pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/T-Hist-';
-filename = strcat(pathName, num2str(length(p)),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle),'.png');
+histogram(pTf(2:trial+1), 'BinWidth', 50);
+title(strcat('Time Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
+xc = xlim;
+xl = xc(1)*0.2+xc(2)*0.8;
+yc = ylim;
+yl1 = yc(1)*0.17+yc(2)*0.83;
+yl2 = yc(1)*0.23+yc(2)*0.77;
+text(xl,yl1,strcat('mean=',num2str(mean(pTf(2:trial+1)))),'Color','red','FontSize',12);
+text(xl,yl2,strcat('var=',num2str(var(pTf(2:trial+1)))),'Color','red','FontSize',12);
+filename = strcat(pathN, 'T-Hist-N',num2str(length(p)),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle),'.png');
 saveas(gcf, filename,'png');
 %close gcf;
 
 fig2 = figure;
-histogram(pEf, 'BinWidth', 0.1);
+histogram(pEf(2:trial+1), 'BinWidth', 0.1);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
-title(strcat('Energy Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
-pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/E-Hist-';
-filename = strcat(pathName, num2str(length(p)),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle),'.png');
+title(strcat('Energy Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)));
+xc = xlim;
+xl = xc(1)*0.2+xc(2)*0.8;
+yc = ylim;
+yl1 = yc(1)*0.17+yc(2)*0.83;
+yl2 = yc(1)*0.23+yc(2)*0.77;
+text(xl,yl1,strcat('mean=',num2str(mean(pEf(2:trial+1)))),'Color','red','FontSize',12);
+text(xl,yl2,strcat('var=',num2str(var(pEf(2:trial+1)))),'Color','red','FontSize',12);
+filename = strcat(pathN, 'E-Hist-N',num2str(length(p)),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle),'.png');
 saveas(gcf, filename,'png');
 %close gcf;
 
 fig3 = figure;
-histogram(pDf, 'BinWidth', 1);
+histogram(pDf(2:trial+1), 'BinWidth', 0.1);
 % line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
-title(strcat('HTdistance Histogram for ', num2str(node),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
-pathName ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/D-Hist-';
-filename = strcat(pathName, num2str(length(p)),'node-a',num2str(a),'-l',num2str(L),'-r',num2str(angle),'.png');
+title(strcat('HTdistance Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
+xc = xlim;
+xl = xc(1)*0.2+xc(2)*0.8;
+yc = ylim;
+yl1 = yc(1)*0.17+yc(2)*0.83;
+yl2 = yc(1)*0.23+yc(2)*0.77;
+text(xl,yl1,strcat('mean=',num2str(mean(pDf(2:trial+1)))),'Color','red','FontSize',12);
+text(xl,yl2,strcat('var=',num2str(var(pDf(2:trial+1)))),'Color','red','FontSize',12);
+filename = strcat(pathN, 'D-Hist-N',num2str(length(p)),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle),'.png');
 saveas(gcf, filename,'png');
 %close gcf;
+
 
 %% Local functions
 
@@ -95,8 +115,8 @@ function fp = createRandPolymer(fnode)
 fp = zeros(1,fnode);
 fp(2) = 0;
 
-for no = 3:fnode-1
-    r = rand()
+parfor no = 3:fnode-1
+    r = rand();
     if r < 1/3
         fp(no) = 0;      % not flip, stay trans
     else
@@ -113,7 +133,7 @@ disp(strcat('createRandPolymer: ', num2str(fp)));
 disp('--trials--');
 end
 
-function [fPnew, fHTd, ffin] = twistLoopRand(ft, fp, fPc, fPt, fa, fL, fangle, fHc, fHt)
+function [fPnew, fHTd, ffin] = twistLoopRand(fpath, ft, fp, fPc, fPt, fa, fL, fangle, fHc, fHt)
 % To twist randomly till formed a loop
 
 disp(strcat('T-',num2str(ft),'-------------'));
@@ -128,7 +148,7 @@ fv = visV(buildV(fPnew, fL, fangle));
 xt = fv(1,:);
 yt = fv(2,:);
 zt = fv(3,:);
-plot3(xt(1:stair), yt(1:stair),zt(1:stair));
+plot3(xt(1:stair),yt(1:stair),zt(1:stair));
 xlmin = min(xt);
 xlmax = max(xt);
 ylmin = min(yt);
@@ -162,12 +182,13 @@ while HTdist(fPnew, fL, fangle) > fa
     ffin = ffin+1;
     
     stair = length(fp)-1;
+    
     fv = visV(buildV(fPnew, fL, fangle));
     xt = fv(1,:);
     yt = fv(2,:);
     zt = fv(3,:);
     
-    plot3(xt(1:stair), yt(1:stair),zt(1:stair));
+    plot3(xt(1:stair), yt(1:stair), zt(1:stair));
     grid;
     xlmin = min(min(xt),xlmin);
     xlmax = max(max(xt),xlmax);
@@ -179,20 +200,20 @@ while HTdist(fPnew, fL, fangle) > fa
     xlabel 'x';
     ylabel 'y';
     zlabel 'z';
-    title(strcat('3D Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));axis([ xlmin, xlmax, ylmin, ylmax]);
+    title(strcat('3D Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
     xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
-    yl1 = yc(1)*0.17+yc(2)*0.83;
-    yl2 = yc(1)*0.23+yc(2)*0.77;
-    zc = xlim;
+    yl1 = yc(1)*0.14+yc(2)*0.86;
+    yl2 = yc(1)*0.26+yc(2)*0.74;
+    zc = zlim;
     zl = zc(1)*0.2+zc(2)*0.8;
     
     text(xl,yl1,zl, strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
     drawnow;
     
-    %   pause(0.6)
+%       pause(0.6)
     
     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     
@@ -200,9 +221,8 @@ end
 
 fHTd = HTdist(fPnew, fL, fangle);
 
-path ='/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/';
-filename = strcat(path, num2str(length(fp)),'node-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
-saveas(gcf, filename,'png');
+filename = strcat(fpath, 'N',num2str(length(fp)),'-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+parsaveas(gcf, filename,'png');
 close gcf;
 
 disp(strcat('final state: ', num2str(fPnew)));
@@ -236,7 +256,7 @@ function fE = pE(fp, fHc, fHt)
 
 fE = 0;
 
-for no = 3:length(fp)-1
+parfor no = 3:length(fp)-1
     if abs(fp(no)) == 1
         fE = fE + fHc;      % cis
     else
@@ -254,20 +274,21 @@ fD = norm(sum(fm,2));
 
 end
 
-
 function fm = buildV(fp, fL, fangle)
 % To build a vector set (matrix) based on given polymer states
 
-ftrans = ones(1, fnode-2);
-for count = 2:fnode-2
+ftrans = ones(1, length(fp)-2);
+for count = 2:length(fp)-2
     ftrans(count) = -ftrans(count-1);
 end
-
 fm2D = build2DV([0, ftrans, 0], fL, fangle);
 
 fx = fm2D(1,:);
 fy = fm2D(2,:);
 fz = zeros(1, length(fp)-1);
+% length(fx)
+% length(fy)
+% length(fz)
 
 fm = [fx;fy;fz];
 
@@ -280,14 +301,13 @@ for no = 2:length(fp)-1
         w = ax(3);
         
         if fp(no) == 1
-           ang = pi/3; % CCW
+            ang = pi/3; % CCW
         else
-           ang = 2*pi/3; % CW
+            ang = 2*pi/3; % CW
         end
         rot = [u^2+(1-u^2)*cos(ang), u*v*(1-cos(ang))-w*sin(ang), u*w*(1-cos(ang))+v*sin(ang);
-           [u^2+(1-u^2)*cos(ang), u*v*(1-cos(ang))-w*sin(ang), u*w*(1-cos(ang))+v*sin(ang);
-         [u^2+(1-u^2)*cos(ang), u*v*(1-cos(ang))-w*sin(ang), u*w*(1-cos(ang))+v*sin(ang);
-          
+            u*v*(1-cos(ang))+w*sin(ang), v^2+(1-v^2)*cos(ang), v*w*(1-cos(ang))-u*sin(ang);
+            u*w*(1-cos(ang))-v*sin(ang), w*v*(1-cos(ang))+u*sin(ang), w^2+(1-w^2)*cos(ang)];
         fm(:,no:end) = rot*fm(:,no:end);
     end
 end
