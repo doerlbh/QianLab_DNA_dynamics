@@ -274,12 +274,19 @@ fm = [fx;fy;fz];
 for no = 2:length(fp)-1
     if fp(no) == 0
     else
+        ax = fm(:,no-1);
+        u = ax(1);
+        v = ax(2);
+        w = ax(3);
+        
         if fp(no) == 1
-           ang = pi/3; % CCW
+            ang = pi/3; % CCW
         else
-           ang = 2*pi/3; % CW
+            ang = 2*pi/3; % CW
         end
-        rot = [cos(fangle) -sin(fangle); sin(fangle) cos(fangle)];
+        rot = [u^2+(1-u^2)*cos(ang), u*v*(1-cos(ang))-w*sin(ang), u*w*(1-cos(ang))+v*sin(ang);
+            u*v*(1-cos(ang))+w*sin(ang), v^2+(1-v^2)*cos(ang), v*w*(1-cos(ang))-u*sin(ang);
+            u*w*(1-cos(ang))-v*sin(ang), w*v*(1-cos(ang))+u*sin(ang), w^2+(1-w^2)*cos(ang)];
         fm(:,no:end) = rot*fm(:,no:end);
     end
 end
