@@ -93,8 +93,9 @@ function fp = createRandPolymer(fnode)
 % To create a random polymer with node nodes
 
 fp = zeros(1,fnode);
+fp(2) = 0;
 
-for no = 2:fnode-1
+for no = 3:fnode-1
     r = rand()
     if r < 1/3
         fp(no) = 0;      % not flip, stay trans
@@ -186,7 +187,7 @@ while HTdist(fPnew, fL, fangle) > fa
     yl2 = yc(1)*0.23+yc(2)*0.77;
     zc = xlim;
     zl = zc(1)*0.2+zc(2)*0.8;
-
+    
     text(xl,yl1,zl, strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
     drawnow;
@@ -234,11 +235,9 @@ function fE = pE(fp, fHc, fHt)
 % To calculate energy of a certain polymer state
 
 fE = 0;
-fs = diag(fp(2:length(fp)-2).'*fp(3:length(fp)-1));
 
-for no = 1:length(fp)-3
-    if fs(no) == 1
-        
+for no = 3:length(fp)-1
+    if abs(fp(no)) == 1
         fE = fE + fHc;      % cis
     else
         fE = fE + fHt;     % trans
@@ -255,8 +254,40 @@ fD = norm(sum(fm,2));
 
 end
 
+
 function fm = buildV(fp, fL, fangle)
 % To build a vector set (matrix) based on given polymer states
+
+ftrans = ones(1, fnode-2);
+for count = 2:fnode-2
+    ftrans(count) = -ftrans(count-1);
+end
+
+fm2D = build2DV([0, ftrans, 0], fL, fangle);
+
+fx = fm2D(1,:);
+fy = fm2D(2,:);
+fz = zeros(1, length(fp)-1);
+
+fm = [fx;fy;fz];
+
+for no = 2:length(fp)-1
+    if fp(no) == 0
+    else
+        if fp(no) == 1
+           ang = pi/3; % CCW
+        else
+           ang = 2*pi/3; % CW
+        end
+        rot = [cos(fangle) -sin(fangle); sin(fangle) cos(fangle)];
+        fm(:,no:end) = rot*fm(:,no:end);
+    end
+end
+
+end
+
+function fm = build2DV(fp, fL, fangle)
+% To build a 2D vector set (matrix) based on given polymer states
 
 fx = ones(1, length(fp)-1)*fL;
 fy = zeros(1, length(fp)-1);
