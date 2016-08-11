@@ -11,53 +11,60 @@ close all;
 rng(378);                 % randomizer
 
 trial = 500;              % trials
-%twist = 200;            % change of state
-node = 200;               % nodes of rigid polymer
+twist = 2000;            % change of set state changes
+node = 500;               % nodes of rigid polymer
 
 global pathN;
 pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
 system(['mkdir ' pathN]);
 
-angle = 0.1;           % in rad, angle changed in each twist
+angle = 0.1;            % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 20;                 % threshold to form loop
 
 Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
 Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
-b = 1;      % redefined beta based on H
+% b = 1;      % redefined beta based on H
 
-Pc = exp(-b*Hc)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of cis change
-Pc2 = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*Ht));
-Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
-Pt2 = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*Ht));
+% Pc = exp(-b*Hc)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of cis change
+% Pc2 = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*Ht));
+% Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
+% Pt2 = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*Ht));
 
-%% Generate a polymer
+
+%% Local functions
+
+[pTf, pEf, pDf] = loopSimulation(node, trial,pathN, a, L, angle, Hc, Ht);
+
+function [pTf, pEf, pDf] = loopSimulation(fnode, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
+% simulate the looping events
+% Generate a polymer
 
 % initial direction = positive x
 % default change = counterclockwise angle
 % in this vector, first and last node are zero
 % from node 2 to node n-1, they are either 1 (CW) or -1 (CCW)
 
-p = createRandPolymer(node); % randomly generate
+p = createRandPolymer(fnode); % randomly generate
 
-%% Construct a recorder
+% Construct a recorder
 
-pTf = zeros(1,trial+1); % record times to form a loop
-pEf = zeros(1,trial+1); % record energy to form a loop
-pDf = zeros(1,trial+1); % record head-tail distances to form a loop
+pTf = zeros(1,ftrial+1); % record times to form a loop
+pEf = zeros(1,ftrial+1); % record energy to form a loop
+pDf = zeros(1,ftrial+1); % record head-tail distances to form a loop
 
-%% Simulation of twisting
+% Simulation of twisting
 
 pTf(1) = 0;
-pEf(1) = pE(p, Hc, Ht);
-pDf(1) = HTdist(p, L, angle);
+pEf(1) = pE(p, fHc, fHt);
+pDf(1) = HTdist(p, fL, fangle);
 
-for n = 2:trial+1
+for n = 2:ftrial+1
     % parfor n = 2:trial+1
     % To twist till looped
-    [Pnew, HTd, fin] = twistLoopRand(pathN, n, p, Pc, Pt, a, L, angle, Hc, Ht);
+    [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
     pTf(n) = fin;
-    pEf(n) = pE(Pnew, Hc, Ht);
+    pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
 end
 
@@ -107,8 +114,7 @@ filename = strcat(pathN, 'D-Hist-N',num2str(length(p)),'-a',num2str(a),'-l',num2
 saveas(gcf, filename,'png');
 %close gcf;
 
-
-%% Local functions
+end
 
 function fp = createRandPolymer(fnode)
 % To create a random polymer with node nodes
@@ -135,7 +141,7 @@ disp(strcat('createRandPolymer: ', num2str(fp)));
 disp('--trials--');
 end
 
-function [fPnew, fHTd, ffin] = twistLoopRand(fpath, ft, fp, fPc, fPt, fa, fL, fangle, fHc, fHt)
+function [fPnew, fHTd, ffin] = twistLoopRand(fpath, ft, fp, fa, fL, fangle, fHc, fHt)
 % To twist randomly till formed a loop
 
 disp(strcat('T-',num2str(ft),'-------------'));
@@ -162,7 +168,7 @@ grid;
 xlabel 'x';
 ylabel 'y';
 zlabel 'z';
-title(strcat('3D Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));
+title(strcat('3D Simulation of ',' ',num2str(length(fp)),' node rigid polymer dynamics'));
 
 disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
@@ -209,7 +215,7 @@ while HTdist(fPnew, fL, fangle) > fa
     xlabel 'x';
     ylabel 'y';
     zlabel 'z';
-    title(strcat('3D Simulation of ',num2str(length(fp)),' node rigid polymer dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+    title(strcat('3D Simulation of ',' ',num2str(length(fp)),' node rigid polymer dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
     xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
