@@ -51,33 +51,17 @@ p = createRandPolymer(fnode); % randomly generate
 
 % Construct a recorder
 
-pEf = zeros(1,ftrial+1); % record energy in equilibrium
-pDf = zeros(1,ftrial+1); % record head-tail distances in equilibrium
+pEf = zeros(1,ftrial); % record energy in equilibrium
+pDf = zeros(1,ftrial); % record head-tail distances in equilibrium
 
 for n = 1:ftrial
     % parfor n = 1:ftrial
-    % To twist till looped
-    [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
-    pTf(n) = fin;
+    [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
 end
 
 %% plot histograms
-
-fig1 = figure;
-histogram(pTf(2:trial+1), 'BinWidth', 50);
-title(strcat('Time Histogram for N', num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)))
-xc = xlim;
-xl = xc(1)*0.2+xc(2)*0.8;
-yc = ylim;
-yl1 = yc(1)*0.17+yc(2)*0.83;
-yl2 = yc(1)*0.23+yc(2)*0.77;
-text(xl,yl1,strcat('mean=',num2str(mean(pTf(2:trial+1)))),'Color','red','FontSize',12);
-text(xl,yl2,strcat('var=',num2str(var(pTf(2:trial+1)))),'Color','red','FontSize',12);
-filename = strcat(pathN, 'T-Hist-N',num2str(length(p)),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle),'.png');
-saveas(gcf, filename,'png');
-%close gcf;
 
 fig2 = figure;
 histogram(pEf(2:trial+1), 'BinWidth', 0.2);
