@@ -1,7 +1,7 @@
-% Realtime_Ising_Rigid_Polymer_Dynamics_3D_using_parallel_Rand_Walk_Dist
+% Realtime_Protein_Folding_Simulation_Based_on_Rosetta
 % To simulate the dynamics of a rigid polymer by Sling model in 3D
-% by Baihan Lin, Qian Lab
-% August 2016
+% by Baihan Lin, Baker Lab
+% July 2016
 
 clear all;
 close all;
