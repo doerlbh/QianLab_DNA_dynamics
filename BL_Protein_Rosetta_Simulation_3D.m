@@ -1,5 +1,5 @@
 % Realtime_Protein_Folding_Simulation_Based_on_Rosetta
-% To simulate the dynamics of a rigid polymer by Sling model in 3D
+% To simulate the dynamics of a rigid-body amino acid sequence by Ising model in 3D
 % by Baihan Lin, Baker Lab
 % July 2016
 
@@ -52,8 +52,8 @@ pTf(1) = 0;
 pEf(1) = pE(p, Hc, Ht);
 pDf(1) = HTdist(p, L, angle);
 
-% for n = 2:trial+1
-parfor n = 2:trial+1
+for n = 2:trial+1
+    % parfor n = 2:trial+1
     % To twist till looped
     [Pnew, HTd, fin] = twistLoopRand(pathN, n, p, Pc, Pt, a, L, angle, Hc, Ht);
     pTf(n) = fin;
@@ -116,8 +116,8 @@ function fp = createRandPolymer(fnode)
 fp = zeros(1,fnode);
 fp(2) = 0;
 
-% for no = 3:fnode-1
-parfor no = 3:fnode-1
+for no = 3:fnode-1
+    % parfor no = 3:fnode-1
     r = rand();
     if r < 1/3
         fp(no) = 0;      % not flip, stay trans
@@ -151,12 +151,12 @@ xt = fv(1,:);
 yt = fv(2,:);
 zt = fv(3,:);
 plot3(xt(1:stair),yt(1:stair),zt(1:stair));
-xlmin = min(xt);
-xlmax = max(xt);
-ylmin = min(yt);
-ylmax = max(yt);
-zlmin = min(zt);
-zlmax = max(zt);
+xlmin = -length(fp)*fL;
+xlmax = length(fp)*fL;
+ylmin = -length(fp)*fL;
+ylmax = length(fp)*fL;
+zlmin = -length(fp)*fL;
+zlmax = length(fp)*fL;
 axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
 grid;
 xlabel 'x';
@@ -171,11 +171,18 @@ while HTdist(fPnew, fL, fangle) > fa
     no =  randsample(2:length(fp)-1,1);
     
     Pno = randFlip(fPnew(no));
-    Phypo = [fPnew(1:no-1), Pno, fPnew(no+1:end)];    % hypothetical change
+    Phypo1 = [fPnew(1:no-1), Pno(1), fPnew(no+1:end)];    % hypothetical change
+    Phypo2 = [fPnew(1:no-1), Pno(2), fPnew(no+1:end)];    % hypothetical change
     
-    Pchg = pE(Phypo, fHc, fHt)/(pE(Phypo, fHc, fHt)+pE(fPnew, fHc, fHt));
-    if rand() < Pchg
-        fPnew = Phypo;      % change state
+    Pch1 = pE(Phypo1, fHc, fHt)/(pE(Phypo1, fHc, fHt)+pE(Phypo2, fHc, fHt)+pE(fPnew, fHc, fHt));
+    Pch2 = pE(Phypo2, fHc, fHt)/(pE(Phypo1, fHc, fHt)+pE(Phypo2, fHc, fHt)+pE(fPnew, fHc, fHt));
+    rtt = rand();
+    if rtt < Pch1
+        fPnew = Phypo1;      % change state
+    else
+        if rtt < Pch1+Pch2
+            fPnew = Phypo2;
+        end
     end
     if HTdist(fPnew, fL, fangle) < fa
         break;
@@ -192,12 +199,12 @@ while HTdist(fPnew, fL, fangle) > fa
     
     plot3(xt(1:stair), yt(1:stair), zt(1:stair));
     grid;
-    xlmin = min(min(xt),xlmin);
-    xlmax = max(max(xt),xlmax);
-    ylmin = min(min(yt),ylmin);
-    ylmax = max(max(yt),ylmax);
-    zlmin = min(min(zt),zlmin);
-    zlmax = max(max(zt),zlmax);
+    xlmin = -length(fp)*fL;
+    xlmax = length(fp)*fL;
+    ylmin = -length(fp)*fL;
+    ylmax = length(fp)*fL;
+    zlmin = -length(fp)*fL;
+    zlmax = length(fp)*fL;
     axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
     xlabel 'x';
     ylabel 'y';
@@ -215,7 +222,7 @@ while HTdist(fPnew, fL, fangle) > fa
     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
     drawnow;
     
-%       pause(0.6)
+    %       pause(0.6)
     
     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     
@@ -236,19 +243,10 @@ end
 function fPno = randFlip(fn)
 % To randomly flip
 
-r = rand();
 if fn == 0
-    if r < 0.5
-        fPno = 1;
-    else
-        fPno = -1;
-    end
+    fPno = [1, -1];
 else
-    if r < 0.5
-        fPno = 0;
-    else
-        fPno = -fn;
-    end
+    fPno = [0, -fn];
 end
 
 end
@@ -258,8 +256,8 @@ function fE = pE(fp, fHc, fHt)
 
 fE = 0;
 
-% for no = 3:length(fp)-1
-parfor no = 3:length(fp)-1
+for no = 3:length(fp)-1
+    % parfor no = 3:length(fp)-1
     if abs(fp(no)) == 1
         fE = fE + fHc;      % cis
     else

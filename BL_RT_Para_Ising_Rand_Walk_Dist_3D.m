@@ -1,5 +1,5 @@
 % Realtime_Ising_Rigid_Polymer_Dynamics_3D_using_parallel_Rand_Walk_Dist
-% To simulate the dynamics of a rigid polymer by Sling model in 3D
+% To simulate the dynamics of a rigid polymer by Ising model in 3D
 % by Baihan Lin, Qian Lab
 % August 2016
 
@@ -18,9 +18,9 @@ global pathN;
 pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
 system(['mkdir ' pathN]);
 
-angle = 0.5;           % in rad, angle changed in each twist
+angle = 0.1;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
-a = 30;                 % threshold to form loop
+a = 20;                 % threshold to form loop
 
 Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
 Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
