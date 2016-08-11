@@ -35,9 +35,9 @@ Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 %% Local functions
 
 [pTf, pEf, pDf] = loopSimulation(node, trial, pathN, a, L, angle, Hc, Ht);
-[pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+[pEf, pDf] = EquilSimulation(node, trial, twist, pathN, a, L, angle, Hc, Ht);
 
-function [pEf, pDf] = EquilSimulation1poly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
+function [pEf, pDf] = EquilSimulation(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution
 
 % Generate a polymer
@@ -51,11 +51,18 @@ p = createRandPolymer(fnode); % randomly generate
 
 % Construct a recorder
 
-pEf = zeros(1,ftrial+1); % record energy in equilibrium
-pDf = zeros(1,ftrial+1); % record head-tail distances in equilibrium
+pTf = zeros(1,ftrial+1); % record times to form a loop
+pEf = zeros(1,ftrial+1); % record energy to form a loop
+pDf = zeros(1,ftrial+1); % record head-tail distances to form a loop
 
-for n = 1:ftrial
-    % parfor n = 1:ftrial
+% Simulation of twisting
+
+pTf(1) = 0;
+pEf(1) = pE(p, fHc, fHt);
+pDf(1) = HTdist(p, fL, fangle);
+
+for n = 2:ftrial+1
+    % parfor n = 2:trial+1
     % To twist till looped
     [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
     pTf(n) = fin;
@@ -135,7 +142,7 @@ pEf(1) = pE(p, fHc, fHt);
 pDf(1) = HTdist(p, fL, fangle);
 
 for n = 2:ftrial+1
-    % parfor n = 2:ftrial+1
+    % parfor n = 2:trial+1
     % To twist till looped
     [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
     pTf(n) = fin;
