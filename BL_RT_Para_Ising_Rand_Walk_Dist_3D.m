@@ -150,7 +150,7 @@ title(fname);
 parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
 close gcf;
 
-parsave(strcat(fpathN, fname, '.txt'), 'fLACor', '-ascii');
+save(strcat(fpathN, fname, '.txt'), 'fLACor', '-ascii');
 
 end
 
@@ -169,7 +169,7 @@ title(fname);
 parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
 close gcf;
 
-parsave(strcat(fpathN, fname, '.txt'), 'tau', '-ascii');
+save(strcat(fpathN, fname, '.txt'), 'tau', '-ascii');
 
 end
 
@@ -219,7 +219,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Equil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pEf', '-ascii');
+save(filename, 'pEf', '-ascii');
 
 fig2 = figure;
 histogram(pDf, 'BinWidth', 10);
@@ -237,7 +237,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Equil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pDf', '-ascii');
+save(filename, 'pDf', '-ascii');
 
 end
 
@@ -286,7 +286,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'rEquil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pEf', '-ascii');
+save(filename, 'pEf', '-ascii');
 
 fig2 = figure;
 histogram(pDf, 'BinWidth', 10);
@@ -304,7 +304,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'rEquil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pDf', '-ascii');
+save(filename, 'pDf', '-ascii');
 
 end
 
@@ -355,7 +355,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pTf', '-ascii');
+save(filename, 'pTf', '-ascii');
 
 fig2 = figure;
 histogram(pEf, 'BinWidth', 0.2);
@@ -373,7 +373,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pEf', '-ascii');
+save(filename, 'pEf', '-ascii');
 
 fig3 = figure;
 histogram(pDf, 'BinWidth', 0.2);
@@ -391,7 +391,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pDf', '-ascii');
+save(filename, 'pDf', '-ascii');
 
 end
 
@@ -439,7 +439,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pTf', '-ascii');
+save(filename, 'pTf', '-ascii');
 
 fig2 = figure;
 histogram(pEf, 'BinWidth', 0.2);
@@ -457,7 +457,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pEf', '-ascii');
+save(filename, 'pEf', '-ascii');
 
 fig3 = figure;
 histogram(pDf, 'BinWidth', 0.2);
@@ -475,7 +475,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pDf', '-ascii');
+save(filename, 'pDf', '-ascii');
 
 end
 
