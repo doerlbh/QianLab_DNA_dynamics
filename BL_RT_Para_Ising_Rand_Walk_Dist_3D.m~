@@ -15,7 +15,7 @@ twist = 2000;            % change of set state changes
 node = 500;               % nodes of rigid polymer
 
 global pathN;
-pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
+pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-Eq-',num2str(node),'/');
 system(['mkdir ' pathN]);
 
 angle = 0.1;            % in rad, angle changed in each twist
@@ -33,15 +33,30 @@ Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 
 %% Main functions
 
-[pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+tic;
+[finP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+tEq = toc;
 
-[pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+tic;
+[finPr,pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+tEqr = toc;
 
-% [pTf, pEf, pDf] = loopSimulation(node, trial, pathN, a, L, angle, Hc, Ht);
+disp(tEq);
+disp(tEqr);
+
+% [pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+
+% tLoop = zeros(1,10);
+% tic;
+% for n = 1:10
+%     [pTf, pEf, pDf] = loopSimulation(n*100, trial, pathN, a, L, angle, Hc, Ht);
+%     tLoop(n) = toc;
+% end
+% plot(tLoop);
 
 %% Local functions
 
-function [pEf, pDf] = EquilSimulation1poly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
+function [finP, pEf, pDf] = EquilSimulation1poly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution from one single state
 
 % Generate a polymer
@@ -57,12 +72,14 @@ p = createRandPolymer(fnode); % randomly generate
 
 pEf = zeros(1,ftrial); % record energy in equilibrium
 pDf = zeros(1,ftrial); % record head-tail distances in equilibrium
+finP = zeros(ftrial,fnode); % record head-tail distances in equilibrium
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
     [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
+    finP(n,:) = Pnew;
 end
 
 % plot histograms
@@ -105,13 +122,14 @@ save(filename, 'pDf', '-ascii');
 
 end
 
-function [pEf, pDf] = EquilSimulationRandpoly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
+function [finP, pEf, pDf] = EquilSimulationRandpoly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution from a random state
 
 % Construct a recorder
 
 pEf = zeros(1,ftrial); % record energy in equilibrium
 pDf = zeros(1,ftrial); % record head-tail distances in equilibrium
+finP = zeros(ftrial,fnode); % record head-tail distances in equilibrium
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
@@ -127,6 +145,7 @@ parfor n = 1:ftrial
     [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
+    finP(n,:) = Pnew;
 end
 
 % plot histograms
@@ -144,7 +163,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Equil-E-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'rEquil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pEf', '-ascii');
@@ -162,14 +181,14 @@ text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Equil-D-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'rEquil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pDf', '-ascii');
 
 end
 
-function [pTf, pEf, pDf] = loopSimulation(fnode, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
+function [finP, pTf, pEf, pDf] = loopSimulation(fnode, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the looping events
 % Generate a polymer
 
@@ -185,6 +204,7 @@ p = createRandPolymer(fnode); % randomly generate
 pTf = zeros(1,ftrial+1); % record times to form a loop
 pEf = zeros(1,ftrial+1); % record energy to form a loop
 pDf = zeros(1,ftrial+1); % record head-tail distances to form a loop
+finP = zeros(ftrial,fnode); % record head-tail distances in equilibrium
 
 % Simulation of twisting
 
@@ -199,6 +219,7 @@ parfor n = 2:ftrial+1
     pTf(n) = fin;
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
+    finP(n-1) =
 end
 
 % plot histograms
@@ -215,7 +236,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pTf(2:ftrial+1)))),'Color','red','FontSi
 text(xl,yl2,strcat('var=',num2str(var(pTf(2:ftrial+1)))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-T-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pTf', '-ascii');
@@ -233,7 +254,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pEf(2:ftrial+1)))),'Color','red','FontSi
 text(xl,yl2,strcat('var=',num2str(var(pEf(2:ftrial+1)))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-E-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pEf', '-ascii');
@@ -251,7 +272,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pDf(2:ftrial+1)))),'Color','red','FontSi
 text(xl,yl2,strcat('var=',num2str(var(pDf(2:ftrial+1)))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-D-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pDf', '-ascii');

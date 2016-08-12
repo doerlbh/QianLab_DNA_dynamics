@@ -13,6 +13,7 @@ rng(378);                 % randomizer
 trial = 1000;              % trials
 twist = 2000;            % change of set state changes
 node = 500;               % nodes of rigid polymer
+AutoT = 1000;
 
 global pathN;
 pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-Eq-',num2str(node),'/');
@@ -34,21 +35,31 @@ Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 %% Main functions
 
 tic;
-[pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+[finP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
 tEq = toc;
 
 tic;
-[pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+[finPr,pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
 tEqr = toc;
 
 disp(tEq);
 disp(tEqr);
 
-% [pTf, pEf, pDf] = loopSimulation(node, trial, pathN, a, L, angle, Hc, Ht);
+tic;
+[pEfr, pDfr] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht);
+tAuto = toc;
+
+% tLoop = zeros(1,10);
+% tic;
+% for n = 1:10
+%     [pTf, pEf, pDf] = loopSimulation(n*100, trial, pathN, a, L, angle, Hc, Ht);
+%     tLoop(n) = toc;
+% end
+% plot(tLoop);
 
 %% Local functions
 
-function [pEf, pDf] = EquilSimulation1poly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
+function [finP, pEf, pDf] = EquilSimulation1poly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution from one single state
 
 % Generate a polymer
@@ -64,12 +75,14 @@ p = createRandPolymer(fnode); % randomly generate
 
 pEf = zeros(1,ftrial); % record energy in equilibrium
 pDf = zeros(1,ftrial); % record head-tail distances in equilibrium
+finP = zeros(ftrial,fnode); % record head-tail distances in equilibrium
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
     [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
+    finP(n,:) = Pnew;
 end
 
 % plot histograms
@@ -112,13 +125,14 @@ save(filename, 'pDf', '-ascii');
 
 end
 
-function [pEf, pDf] = EquilSimulationRandpoly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
+function [finP, pEf, pDf] = EquilSimulationRandpoly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution from a random state
 
 % Construct a recorder
 
 pEf = zeros(1,ftrial); % record energy in equilibrium
 pDf = zeros(1,ftrial); % record head-tail distances in equilibrium
+finP = zeros(ftrial,fnode); % record head-tail distances in equilibrium
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
@@ -134,6 +148,7 @@ parfor n = 1:ftrial
     [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
+    finP(n,:) = Pnew;
 end
 
 % plot histograms
@@ -176,7 +191,7 @@ save(filename, 'pDf', '-ascii');
 
 end
 
-function [pTf, pEf, pDf] = loopSimulation(fnode, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
+function [finP, pTf, pEf, pDf] = loopSimulation(fnode, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the looping events
 % Generate a polymer
 
@@ -189,37 +204,33 @@ p = createRandPolymer(fnode); % randomly generate
 
 % Construct a recorder
 
-pTf = zeros(1,ftrial+1); % record times to form a loop
-pEf = zeros(1,ftrial+1); % record energy to form a loop
-pDf = zeros(1,ftrial+1); % record head-tail distances to form a loop
+pTf = zeros(1,ftrial); % record times to form a loop
+pEf = zeros(1,ftrial); % record energy to form a loop
+pDf = zeros(1,ftrial); % record head-tail distances to form a loop
+finP = zeros(ftrial,fnode); % record head-tail distances in equilibrium
 
-% Simulation of twisting
-
-pTf(1) = 0;
-pEf(1) = pE(p, fHc, fHt);
-pDf(1) = HTdist(p, fL, fangle);
-
-% for n = 2:ftrial+1
-parfor n = 2:ftrial+1
+% for n = 1:ftrial
+parfor n = 1:ftrial
     % To twist till looped
     [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
     pTf(n) = fin;
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
+    finP(n) = Pnew;
 end
 
 % plot histograms
 
 fig1 = figure;
-histogram(pTf(2:ftrial+1), 'BinWidth', 50);
+histogram(pTf, 'BinWidth', 50);
 title(strcat('Time Histogram for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
 yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
-text(xl,yl1,strcat('mean=',num2str(mean(pTf(2:ftrial+1)))),'Color','red','FontSize',12);
-text(xl,yl2,strcat('var=',num2str(var(pTf(2:ftrial+1)))),'Color','red','FontSize',12);
+text(xl,yl1,strcat('mean=',num2str(mean(pTf))),'Color','red','FontSize',12);
+text(xl,yl2,strcat('var=',num2str(var(pTf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-T-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 close gcf;
@@ -228,7 +239,7 @@ filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2st
 save(filename, 'pTf', '-ascii');
 
 fig2 = figure;
-histogram(pEf(2:ftrial+1), 'BinWidth', 0.2);
+histogram(pEf, 'BinWidth', 0.2);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('Energy Histogram for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)));
 xc = xlim;
@@ -236,8 +247,8 @@ xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
 yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
-text(xl,yl1,strcat('mean=',num2str(mean(pEf(2:ftrial+1)))),'Color','red','FontSize',12);
-text(xl,yl2,strcat('var=',num2str(var(pEf(2:ftrial+1)))),'Color','red','FontSize',12);
+text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
+text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-E-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 close gcf;
@@ -246,7 +257,7 @@ filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2st
 save(filename, 'pEf', '-ascii');
 
 fig3 = figure;
-histogram(pDf(2:ftrial+1), 'BinWidth', 0.2);
+histogram(pDf, 'BinWidth', 0.2);
 % line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('HTdistance Histogram for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
 xc = xlim;
@@ -254,8 +265,8 @@ xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
 yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
-text(xl,yl1,strcat('mean=',num2str(mean(pDf(2:ftrial+1)))),'Color','red','FontSize',12);
-text(xl,yl2,strcat('var=',num2str(var(pDf(2:ftrial+1)))),'Color','red','FontSize',12);
+text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
+text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-D-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 close gcf;
