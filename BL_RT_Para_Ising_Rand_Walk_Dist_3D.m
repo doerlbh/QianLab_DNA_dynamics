@@ -1,51 +1,51 @@
-% % Realtime_Ising_Rigid_Polymer_Dynamics_3D_using_parallel_Rand_Walk_Dist_Auto
-% % To simulate the dynamics of a rigid polymer by Ising model in 3D plus
-% % autocorrelation
-% %
-% % by Baihan Lin, Qian Lab
-% % August 2016
-% 
-% clear all;
-% close all;
-% 
-% %% Initialization
-% 
-% rng(1234);                 % randomizer
-% 
-% trial = 500;             % trials
-% twist = 2000;             % change of set state changes
-% node = 500;               % nodes of rigid polymer
-% AutoT = 1000;             % autocorrelation run time
-% 
-% global pathN;
-% pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-EquilLoop-',num2str(node),'/');
-% system(['mkdir ' pathN]);
-% 
-% angle = 0.1;            % in rad, angle changed in each twist
-% L = 1;                  % length of each segment of rigid polymer
-% a = 20;                 % threshold to form loop
-% 
-% Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
-% Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
-% % b = 1;      % redefined beta based on H
-% 
-% % Pc = exp(-b*Hc)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of cis change
-% % Pc2 = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*Ht));
-% % Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
-% % Pt2 = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*Ht));
-% 
-% %% Main functions for Equilibrium
-% 
-% tic;
-% [finP, stP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
-% tEq = toc;
-% 
-% tic;
-% [finPr, stPr, pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
-% tEqr = toc;
-% 
-% disp(strcat('tEq=',tEq));
-% disp(strcat('tEqr=',tEqr));
+% Realtime_Ising_Rigid_Polymer_Dynamics_3D_using_parallel_Rand_Walk_Dist_Auto
+% To simulate the dynamics of a rigid polymer by Ising model in 3D plus
+% autocorrelation
+%
+% by Baihan Lin, Qian Lab
+% August 2016
+
+clear all;
+close all;
+
+%% Initialization
+
+rng(1234);                 % randomizer
+
+trial = 500;             % trials
+twist = 2000;             % change of set state changes
+node = 500;               % nodes of rigid polymer
+AutoT = 1000;             % autocorrelation run time
+
+global pathN;
+pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-EquilLoop-',num2str(node),'/');
+system(['mkdir ' pathN]);
+
+angle = 0.1;            % in rad, angle changed in each twist
+L = 1;                  % length of each segment of rigid polymer
+a = 20;                 % threshold to form loop
+
+Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
+Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
+% b = 1;      % redefined beta based on H
+
+% Pc = exp(-b*Hc)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of cis change
+% Pc2 = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*Ht));
+% Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
+% Pt2 = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*Ht));
+
+%% Main functions for Equilibrium
+
+tic;
+[finP, stP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+tEq = toc;
+
+tic;
+[finPr, stPr, pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+tEqr = toc;
+
+disp(strcat('tEq=',tEq));
+disp(strcat('tEqr=',tEqr));
 
 %% Autocorrelation for Equilibrium
 
@@ -65,37 +65,37 @@ disp(strcat('tAutoEr=',tAutoEr));
 rtau = Cor2tau(RACor, pathN, fnamee);
 rtaur = Cor2tau(RACorr, pathN, fnameer);
 
-% %% Main functions for Looping
-% 
-% tic;
-% [lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
-% tLoop = toc;
-% 
-% tic;
-% [lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, lstPr, trial, pathN, a, L, angle, Hc, Ht);
-% tLoopr = toc;
-% 
-% disp(strcat('tLoop=',tLoop));
-% disp(strcat('tLoopr=',tLoopr));
-% 
-% 
-% %% Autocorrelation for Looping
-% 
-% tic;
-% fnamel = strcat('Loop-Auto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-% [lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fnamel);
-% tAutoL = toc;
-% 
-% tic;
-% fnamelr = strcat('Loop-rAuto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-% [lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
-% tAutoLr = toc;
-% 
-% disp(strcat('tAutoL',tAutoL));
-% disp(strcat('tAutoLr',tAutoLr));
-% 
-% ltau = Cor2tau(LACor, pathN, fnamel);
-% ltaur = Cor2tau(LACorr, pathN, fnamelr);
+%% Main functions for Looping
+
+tic;
+[lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
+tLoop = toc;
+
+tic;
+[lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, lstPr, trial, pathN, a, L, angle, Hc, Ht);
+tLoopr = toc;
+
+disp(strcat('tLoop=',tLoop));
+disp(strcat('tLoopr=',tLoopr));
+
+
+%% Autocorrelation for Looping
+
+tic;
+fnamel = strcat('Loop-Auto-N',num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+[lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fnamel);
+tAutoL = toc;
+
+tic;
+fnamelr = strcat('Loop-rAuto-N',num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+[lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
+tAutoLr = toc;
+
+disp(strcat('tAutoL',tAutoL));
+disp(strcat('tAutoLr',tAutoLr));
+
+ltau = Cor2tau(LACor, pathN, fnamel);
+ltaur = Cor2tau(LACorr, pathN, fnamelr);
 
 
 % tLoop = zeros(1,10);

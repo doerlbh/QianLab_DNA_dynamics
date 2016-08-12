@@ -10,15 +10,15 @@ close all;
 
 %% Initialization
 
-rng(378);                 % randomizer
+rng(1234);                 % randomizer
 
-trial = 1000;             % trials
+trial = 500;             % trials
 twist = 2000;             % change of set state changes
 node = 500;               % nodes of rigid polymer
-AutoT = 2000;             % autocorrelation run time
+AutoT = 1000;             % autocorrelation run time
 
 global pathN;
-pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-Eq-',num2str(node),'/');
+pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-EquilLoop-',num2str(node),'/');
 system(['mkdir ' pathN]);
 
 angle = 0.1;            % in rad, angle changed in each twist
@@ -50,12 +50,12 @@ disp(strcat('tEqr=',tEqr));
 %% Autocorrelation for Equilibrium
 
 tic;
-fnamee = strcat('Equil-Auto-N',num2str(fnode),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+fnamee = strcat('Equil-Auto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
 [AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnamee);
 tAutoE = toc;
 
 tic;
-fnameer = strcat('Equil-rAuto-N',num2str(fnode),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+fnameer = strcat('Equil-rAuto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
 [AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
 tAutoEr = toc;
 
@@ -65,37 +65,37 @@ disp(strcat('tAutoEr=',tAutoEr));
 rtau = Cor2tau(RACor, pathN, fnamee);
 rtaur = Cor2tau(RACorr, pathN, fnameer);
 
-%% Main functions for Looping
-
-tic;
-[lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
-tLoop = toc;
-
-tic;
-[lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, lstPr, trial, pathN, a, L, angle, Hc, Ht);
-tLoopr = toc;
-
-disp(strcat('tLoop=',tLoop));
-disp(strcat('tLoopr=',tLoopr));
-
-
-%% Autocorrelation for Looping
-
-tic;
-fnamel = strcat('Loop-Auto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-[lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fnamel);
-tAutoL = toc;
-
-tic;
-fnamelr = strcat('Loop-rAuto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-[lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
-tAutoLr = toc;
-
-disp(strcat('tAutoL',tAutoL));
-disp(strcat('tAutoLr',tAutoLr));
-
-ltau = Cor2tau(LACor, pathN, fnamel);
-ltaur = Cor2tau(LACorr, pathN, fnamelr);
+% %% Main functions for Looping
+% 
+% tic;
+% [lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
+% tLoop = toc;
+% 
+% tic;
+% [lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, lstPr, trial, pathN, a, L, angle, Hc, Ht);
+% tLoopr = toc;
+% 
+% disp(strcat('tLoop=',tLoop));
+% disp(strcat('tLoopr=',tLoopr));
+% 
+% 
+% %% Autocorrelation for Looping
+% 
+% tic;
+% fnamel = strcat('Loop-Auto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+% [lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fnamel);
+% tAutoL = toc;
+% 
+% tic;
+% fnamelr = strcat('Loop-rAuto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+% [lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
+% tAutoLr = toc;
+% 
+% disp(strcat('tAutoL',tAutoL));
+% disp(strcat('tAutoLr',tAutoLr));
+% 
+% ltau = Cor2tau(LACor, pathN, fnamel);
+% ltaur = Cor2tau(LACorr, pathN, fnamelr);
 
 
 % tLoop = zeros(1,10);
@@ -124,7 +124,7 @@ parfor n = 1:ftrial
     % from node 2 to node n-1, they are either 1 (CW) or -1 (CCW)
     
     p = stP(n,:);
-    [Pnew, HTd] = twistEquilRand(fpathN, fAutoT, n, p, fa, fL, fangle, fHc, fHt);
+    [Pnew, HTd] = fasttwistEquilRand(fpathN, fAutoT, n, p, fa, fL, fangle, fHc, fHt);
     fAfinP(n,:) = Pnew;
 end
 
@@ -140,7 +140,7 @@ fLACor = zeros(1, n);
 
 for c = 1:n
     Cst = finConfig(flstP(c,:), fL, fangle);
-    Cfin = finConfig(flfinP(c,:), fL, fangle)
+    Cfin = finConfig(flfinP(c,:), fL, fangle);
     fLACor(c) = dot(Cst, Cfin);
 end
 
@@ -150,7 +150,7 @@ title(fname);
 parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
 close gcf;
 
-parsave(strcat(fpathN, fname, '.txt'), 'fLACor', '-ascii');
+save(strcat(fpathN, fname, '.txt'), 'fLACor', '-ascii');
 
 end
 
@@ -158,7 +158,7 @@ function tau = Cor2tau(Cor, fpathN, fname)
 % find tau from autocorrelation
 
 n = length(Cor);
-tau = zeros(1,n)
+tau = zeros(1,n);
 for c = 1:n
     tau(c) = -log(Cor(c))/c;
 end
@@ -169,7 +169,7 @@ title(fname);
 parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
 close gcf;
 
-parsave(strcat(fpathN, fname, '.txt'), 'tau', '-ascii');
+save(strcat(fpathN, fname, '.txt'), 'tau', '-ascii');
 
 end
 
@@ -195,7 +195,7 @@ stP = zeros(ftrial,fnode); % record inital states
 % for n = 1:ftrial
 parfor n = 1:ftrial
     stP(n,:) = p;
-    [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
+    [Pnew, HTd] = fasttwistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
     finP(n,:) = Pnew;
@@ -219,7 +219,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Equil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pEf', '-ascii');
+save(filename, 'pEf', '-ascii');
 
 fig2 = figure;
 histogram(pDf, 'BinWidth', 10);
@@ -237,7 +237,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Equil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pDf', '-ascii');
+save(filename, 'pDf', '-ascii');
 
 end
 
@@ -262,7 +262,7 @@ parfor n = 1:ftrial
     
     p = createRandPolymer(fnode); % randomly generate
     stP(n,:) = p;
-    [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
+    [Pnew, HTd] = fasttwistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
     finP(n,:) = Pnew;
@@ -281,12 +281,12 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
-filename = strcat(fpathN, 'Equil-E-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(fpathN, 'rEquil-E-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'rEquil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pEf', '-ascii');
+save(filename, 'pEf', '-ascii');
 
 fig2 = figure;
 histogram(pDf, 'BinWidth', 10);
@@ -299,12 +299,12 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
-filename = strcat(fpathN, 'Equil-D-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(fpathN, 'rEquil-D-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'rEquil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pDf', '-ascii');
+save(filename, 'pDf', '-ascii');
 
 end
 
@@ -331,7 +331,7 @@ stP = zeros(ftrial,fnode); % record inital states
 parfor n = 1:ftrial
     stP(n,:) = p;
     % To twist till looped
-    [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
+    [Pnew, HTd, fin] = fasttwistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
     pTf(n) = fin;
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
@@ -355,7 +355,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pTf', '-ascii');
+save(filename, 'pTf', '-ascii');
 
 fig2 = figure;
 histogram(pEf, 'BinWidth', 0.2);
@@ -373,7 +373,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pEf', '-ascii');
+save(filename, 'pEf', '-ascii');
 
 fig3 = figure;
 histogram(pDf, 'BinWidth', 0.2);
@@ -391,7 +391,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pDf', '-ascii');
+save(filename, 'pDf', '-ascii');
 
 end
 
@@ -415,7 +415,7 @@ finP = zeros(ftrial,fnode); % record end states
 parfor n = 1:ftrial
     p = stP(n,:);
     % To twist till looped
-    [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
+    [Pnew, HTd, fin] = fasttwistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
     pTf(n) = fin;
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
@@ -439,7 +439,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pTf', '-ascii');
+save(filename, 'pTf', '-ascii');
 
 fig2 = figure;
 histogram(pEf, 'BinWidth', 0.2);
@@ -457,7 +457,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pEf', '-ascii');
+save(filename, 'pEf', '-ascii');
 
 fig3 = figure;
 histogram(pDf, 'BinWidth', 0.2);
@@ -475,7 +475,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-parsave(filename, 'pDf', '-ascii');
+save(filename, 'pDf', '-ascii');
 
 end
 
@@ -579,7 +579,7 @@ while HTdist(fPnew, fL, fangle) > fa
     xlabel 'x';
     ylabel 'y';
     zlabel 'z';
-title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
+    title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
     xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
@@ -683,7 +683,7 @@ for t = 1:ftwist
     ylabel 'y';
     zlabel 'z';
     title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
-xc = xlim;
+    xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
     yl1 = yc(1)*0.14+yc(2)*0.86;
@@ -706,6 +706,214 @@ fHTd = HTdist(fPnew, fL, fangle);
 filename = strcat(fpath, 'N',num2str(length(fp)),'-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 parsaveas(gcf, filename,'png');
 close gcf;
+
+disp(strcat('final state: ', num2str(fPnew)));
+disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
+
+end
+
+function [fPnew, fHTd, ffin] = fasttwistLoopRand(fpath, ft, fp, fa, fL, fangle, fHc, fHt)
+% To twist randomly till formed a loop
+
+disp(strcat('T-',num2str(ft),'-------------'));
+
+fPnew = fp;
+ffin = 1;
+
+% stair = length(fp)-1;
+% 
+% fig = figure;
+% fv = visV(buildV(fPnew, fL, fangle));
+% xt = fv(1,:);
+% yt = fv(2,:);
+% zt = fv(3,:);
+% plot3(xt(1:stair),yt(1:stair),zt(1:stair));
+% xlmin = -length(fp)*fL;
+% xlmax = length(fp)*fL;
+% ylmin = -length(fp)*fL;
+% ylmax = length(fp)*fL;
+% zlmin = -length(fp)*fL;
+% zlmax = length(fp)*fL;
+% axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+% grid;
+% xlabel 'x';
+% ylabel 'y';
+% zlabel 'z';
+% title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
+% axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+% 
+% disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
+
+while HTdist(fPnew, fL, fangle) > fa
+    
+    no =  randsample(2:length(fp)-1,1);
+    
+    Pno = randFlip(fPnew(no));
+    Phypo1 = [fPnew(1:no-1), Pno(1), fPnew(no+1:end)];    % hypothetical change
+    Phypo2 = [fPnew(1:no-1), Pno(2), fPnew(no+1:end)];    % hypothetical change
+    
+    Pch1 = pE(Phypo1, fHc, fHt)/(pE(Phypo1, fHc, fHt)+pE(Phypo2, fHc, fHt)+pE(fPnew, fHc, fHt));
+    Pch2 = pE(Phypo2, fHc, fHt)/(pE(Phypo1, fHc, fHt)+pE(Phypo2, fHc, fHt)+pE(fPnew, fHc, fHt));
+    rtt = rand();
+    if rtt < Pch1
+        fPnew = Phypo1;      % change state
+    else
+        if rtt < Pch1+Pch2
+            fPnew = Phypo2;
+        end
+    end
+    if HTdist(fPnew, fL, fangle) < fa
+        break;
+    end
+    
+    ffin = ffin+1;
+%     
+%     stair = length(fp)-1;
+%     
+%     fv = visV(buildV(fPnew, fL, fangle));
+%     xt = fv(1,:);
+%     yt = fv(2,:);
+%     zt = fv(3,:);
+%     
+%     plot3(xt(1:stair), yt(1:stair), zt(1:stair));
+%     grid;
+%     xlmin = -length(fp)*fL;
+%     xlmax = length(fp)*fL;
+%     ylmin = -length(fp)*fL;
+%     ylmax = length(fp)*fL;
+%     zlmin = -length(fp)*fL;
+%     zlmax = length(fp)*fL;
+%     axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+%     xlabel 'x';
+%     ylabel 'y';
+%     zlabel 'z';
+%     title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
+%     xc = xlim;
+%     xl = xc(1)*0.2+xc(2)*0.8;
+%     yc = ylim;
+%     yl1 = yc(1)*0.14+yc(2)*0.86;
+%     yl2 = yc(1)*0.26+yc(2)*0.74;
+%     zc = zlim;
+%     zl = zc(1)*0.2+zc(2)*0.8;
+% %     
+%     text(xl,yl1,zl, strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+%     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
+%     drawnow;
+    
+    %       pause(0.6)
+    
+%     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
+    
+end
+
+fHTd = HTdist(fPnew, fL, fangle);
+
+% filename = strcat(fpath, 'N',num2str(length(fp)),'-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+% parsaveas(gcf, filename,'png');
+% close gcf;
+
+disp(strcat('final state: ', num2str(fPnew)));
+disp(strcat('finish time: ', num2str(ffin)));
+disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
+
+end
+
+function [fPnew, fHTd] = fasttwistEquilRand(fpath, ftwist, ft, fp, fa, fL, fangle, fHc, fHt)
+% To twist randomly till formed a loop
+
+disp(strcat('T-',num2str(ft),'-------------'));
+
+fPnew = fp;
+
+% stair = length(fp)-1;
+% 
+% fig = figure;
+% fv = visV(buildV(fPnew, fL, fangle));
+% xt = fv(1,:);
+% yt = fv(2,:);
+% zt = fv(3,:);
+% plot3(xt(1:stair),yt(1:stair),zt(1:stair));
+% xlmin = -length(fp)*fL;
+% xlmax = length(fp)*fL;
+% ylmin = -length(fp)*fL;
+% ylmax = length(fp)*fL;
+% zlmin = -length(fp)*fL;
+% zlmax = length(fp)*fL;
+% axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+% grid;
+% xlabel 'x';
+% ylabel 'y';
+% zlabel 'z';
+% title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
+% axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+% 
+% disp(strcat('Debug0: ', num2str(fPnew)));
+
+for t = 1:ftwist
+    
+    no =  randsample(2:length(fp)-1,1);
+    
+    Pno = randFlip(fPnew(no));
+    Phypo1 = [fPnew(1:no-1), Pno(1), fPnew(no+1:end)];    % hypothetical change
+    Phypo2 = [fPnew(1:no-1), Pno(2), fPnew(no+1:end)];    % hypothetical change
+    
+    Pch1 = pE(Phypo1, fHc, fHt)/(pE(Phypo1, fHc, fHt)+pE(Phypo2, fHc, fHt)+pE(fPnew, fHc, fHt));
+    Pch2 = pE(Phypo2, fHc, fHt)/(pE(Phypo1, fHc, fHt)+pE(Phypo2, fHc, fHt)+pE(fPnew, fHc, fHt));
+    rtt = rand();
+    if rtt < Pch1
+        fPnew = Phypo1;      % change state
+    else
+        if rtt < Pch1+Pch2
+            fPnew = Phypo2;
+        end
+    end
+    if HTdist(fPnew, fL, fangle) < fa
+        break;
+    end
+    
+%     stair = length(fp)-1;
+%     
+%     fv = visV(buildV(fPnew, fL, fangle));
+%     xt = fv(1,:);
+%     yt = fv(2,:);
+%     zt = fv(3,:);
+%     
+%     plot3(xt(1:stair), yt(1:stair), zt(1:stair));
+%     grid;
+%     xlmin = -length(fp)*fL;
+%     xlmax = length(fp)*fL;
+%     ylmin = -length(fp)*fL;
+%     ylmax = length(fp)*fL;
+%     zlmin = -length(fp)*fL;
+%     zlmax = length(fp)*fL;
+%     axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+%     xlabel 'x';
+%     ylabel 'y';
+%     zlabel 'z';
+%     title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
+%     xc = xlim;
+%     xl = xc(1)*0.2+xc(2)*0.8;
+%     yc = ylim;
+%     yl1 = yc(1)*0.14+yc(2)*0.86;
+%     yl2 = yc(1)*0.26+yc(2)*0.74;
+%     zc = zlim;
+%     zl = zc(1)*0.2+zc(2)*0.8;
+%     
+%     text(xl,yl1,zl, strcat('t=',num2str(t)),'Color','red','FontSize',12);
+%     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
+%     drawnow;
+    
+    %       pause(0.6)
+    
+%     disp(strcat('Debug ',num2str(t),': ', num2str(fPnew)));
+    
+end
+
+fHTd = HTdist(fPnew, fL, fangle);
+
+% filename = strcat(fpath, 'N',num2str(length(fp)),'-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+% parsaveas(gcf, filename,'png');
+% close gcf;
 
 disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
