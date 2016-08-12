@@ -33,11 +33,15 @@ Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 
 %% Main functions
 
-% [pTf, pEf, pDf] = loopSimulation(node, trial, pathN, a, L, angle, Hc, Ht);
-
+tic;
 [pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+tEq = toc;
 
+tic;
 [pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+tEqr = toc;
+
+% [pTf, pEf, pDf] = loopSimulation(node, trial, pathN, a, L, angle, Hc, Ht);
 
 %% Local functions
 
@@ -58,8 +62,8 @@ p = createRandPolymer(fnode); % randomly generate
 pEf = zeros(1,ftrial); % record energy in equilibrium
 pDf = zeros(1,ftrial); % record head-tail distances in equilibrium
 
-for n = 1:ftrial
-    % parfor n = 1:ftrial
+% for n = 1:ftrial
+parfor n = 1:ftrial
     [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
@@ -80,7 +84,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Equil-E-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'Equil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pEf', '-ascii');
@@ -98,7 +102,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Equil-D-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'Equil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pDf', '-ascii');
@@ -113,7 +117,8 @@ function [pEf, pDf] = EquilSimulationRandpoly(fnode, ftrial,ftwist, fpathN, fa, 
 pEf = zeros(1,ftrial); % record energy in equilibrium
 pDf = zeros(1,ftrial); % record head-tail distances in equilibrium
 
-for n = 1:ftrial
+% for n = 1:ftrial
+parfor n = 1:ftrial
     % Generate a polymer
     
     % initial direction = positive x
@@ -123,7 +128,6 @@ for n = 1:ftrial
     
     p = createRandPolymer(fnode); % randomly generate
     
-    % parfor n = 1:ftrial
     [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
@@ -144,7 +148,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Equil-E-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'rEquil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pEf', '-ascii');
@@ -162,7 +166,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Equil-D-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'rEquil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pDf', '-ascii');
@@ -192,8 +196,8 @@ pTf(1) = 0;
 pEf(1) = pE(p, fHc, fHt);
 pDf(1) = HTdist(p, fL, fangle);
 
-for n = 2:ftrial+1
-    % parfor n = 2:ftrial+1
+% for n = 2:ftrial+1
+parfor n = 2:ftrial+1
     % To twist till looped
     [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
     pTf(n) = fin;
@@ -215,7 +219,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pTf(2:ftrial+1)))),'Color','red','FontSi
 text(xl,yl2,strcat('var=',num2str(var(pTf(2:ftrial+1)))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-T-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pTf', '-ascii');
@@ -233,7 +237,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pEf(2:ftrial+1)))),'Color','red','FontSi
 text(xl,yl2,strcat('var=',num2str(var(pEf(2:ftrial+1)))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-E-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pEf', '-ascii');
@@ -251,7 +255,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pDf(2:ftrial+1)))),'Color','red','FontSi
 text(xl,yl2,strcat('var=',num2str(var(pDf(2:ftrial+1)))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-D-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
-%close gcf;
+close gcf;
 
 filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pDf', '-ascii');
@@ -264,8 +268,8 @@ function fp = createRandPolymer(fnode)
 fp = zeros(1,fnode);
 fp(2) = 0;
 
-for no = 3:fnode-1
-    % parfor no = 3:fnode-1
+% for no = 3:fnode-1
+parfor no = 3:fnode-1
     r = rand();
     if r < 1/3
         fp(no) = 0;      % not flip, stay trans
@@ -310,8 +314,8 @@ grid;
 xlabel 'x';
 ylabel 'y';
 zlabel 'z';
-   title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
- 
+title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+
 disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
 while HTdist(fPnew, fL, fangle) > fa
@@ -414,8 +418,8 @@ grid;
 xlabel 'x';
 ylabel 'y';
 zlabel 'z';
-   title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
- 
+title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+
 disp(strcat('Debug0: ', num2str(fPnew)));
 
 for t = 1:ftwist
@@ -505,8 +509,8 @@ function fE = pE(fp, fHc, fHt)
 
 fE = 0;
 
-for no = 3:length(fp)-1
-    % parfor no = 3:length(fp)-1
+% for no = 3:length(fp)-1
+parfor no = 3:length(fp)-1
     if abs(fp(no)) == 1
         fE = fE + fHc;      % cis
     else
