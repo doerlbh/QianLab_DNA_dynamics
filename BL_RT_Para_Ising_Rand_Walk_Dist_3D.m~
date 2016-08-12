@@ -91,8 +91,8 @@ fnamelr = strcat('Loop-rAuto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'
 [lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
 tAutoLr = toc;
 
-disp(strcat('tAutoL',tAutoL);
-disp(tAutoLr);
+disp(strcat('tAutoL',tAutoL));
+disp(strcat('tAutoLr',tAutoLr));
 
 ltau = Cor2tau(LACor, pathN, fnamel);
 ltaur = Cor2tau(LACorr, pathN, fnamelr);
@@ -531,7 +531,7 @@ grid;
 xlabel 'x';
 ylabel 'y';
 zlabel 'z';
-title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));
+title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
 axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
 
 disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
@@ -579,7 +579,7 @@ while HTdist(fPnew, fL, fangle) > fa
     xlabel 'x';
     ylabel 'y';
     zlabel 'z';
-    title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
     xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
@@ -636,7 +636,8 @@ grid;
 xlabel 'x';
 ylabel 'y';
 zlabel 'z';
-title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
+axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
 
 disp(strcat('Debug0: ', num2str(fPnew)));
 
@@ -681,8 +682,8 @@ for t = 1:ftwist
     xlabel 'x';
     ylabel 'y';
     zlabel 'z';
-    title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
-    xc = xlim;
+    title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
+xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
     yl1 = yc(1)*0.14+yc(2)*0.86;
