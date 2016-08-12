@@ -36,6 +36,8 @@ Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 
 %% Main functions
 
+% Equilibrium
+
 tic;
 [finP, stP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
 tEq = toc;
@@ -44,33 +46,58 @@ tic;
 [finPr, stPr, pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
 tEqr = toc;
 
+disp(tEq);
+disp(tEqr);
+
+
+% Looping
+
 tic;
 [lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
 tLoop = toc;
 
-disp(tEq);
-disp(tEqr);
+tic;
+[lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, trial, pathN, a, L, angle, Hc, Ht);
+tLoopr = toc;
+
 disp(tLoop);
+disp(tLoopr);
 
 %% Autocorrelation
 
-tic;
-[AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht);
-tAuto = toc;
+% Equilibrium
 
 tic;
-[AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht);
-tAutor = toc;
+[AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fname);
+tAutoE = toc;
 
-[lfinP, LACor] = AutocorLoop(lfinP, lstP, fL, fangle);
+tic;
+[AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fname);
+tAutoEr = toc;
 
+disp(tAutoE);
+disp(tAutoEr);
 
-% calculate relaxation time
 rtau = Cor2tau(RACor);
 rtaur = Cor2tau(RACorr);
 
-% calculate looping time
+% Loop
+
+tic;
+
+[lfinP, LACor] = AutocorLoop(lfinP, lstP, fL, fangle, fname);
+tAutoL = toc;
+
+tic;
+[lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, fL, fangle, fname);
+tAutoLr = toc;
+
+disp(tAutoL);
+disp(tAutoLr);
+
 ltau = Cor2tau(LACor);
+ltaur = Cor2tau(LACorr);
+
 
 % tLoop = zeros(1,10);
 % tic;
@@ -81,7 +108,6 @@ ltau = Cor2tau(LACor);
 % plot(tLoop);
 
 %% Local functions
-
 
 function [fAfinP, fRACor] = AutocorEq(stP, fnode, ftrial,fAutoT, fpathN, fa, fL, fangle, fHc, fHt)
 % calculate the autocorrelation from any intial states
