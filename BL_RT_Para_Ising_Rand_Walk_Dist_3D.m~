@@ -34,9 +34,7 @@ Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 % Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
 % Pt2 = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*Ht));
 
-%% Main functions
-
-% Equilibrium
+%% Main functions for Equilibrium
 
 tic;
 [finP, stP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
@@ -46,56 +44,58 @@ tic;
 [finPr, stPr, pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
 tEqr = toc;
 
-disp(tEq);
-disp(tEqr);
+disp(strcat('tEq=',tEq));
+disp(strcat('tEqr=',tEqr));
 
+%% Autocorrelation for Equilibrium
 
-% Looping
+tic;
+fnamee = strcat('Equil-Auto-N',num2str(fnode),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+[AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnamee);
+tAutoE = toc;
+
+tic;
+fnameer = strcat('Equil-rAuto-N',num2str(fnode),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+[AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
+tAutoEr = toc;
+
+disp(strcat('tAutoE=',tAutoE));
+disp(strcat('tAutoEr=',tAutoEr));
+
+rtau = Cor2tau(RACor, pathN, fnamee);
+rtaur = Cor2tau(RACorr, pathN, fnameer);
+
+%% Main functions for Looping
 
 tic;
 [lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
 tLoop = toc;
 
 tic;
-[lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, trial, pathN, a, L, angle, Hc, Ht);
+[lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, lstPr, trial, pathN, a, L, angle, Hc, Ht);
 tLoopr = toc;
 
-disp(tLoop);
-disp(tLoopr);
+disp(strcat('tLoop=',tLoop));
+disp(strcat('tLoopr=',tLoopr));
 
-%% Autocorrelation
 
-% Equilibrium
-
-tic;
-[AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fname);
-tAutoE = toc;
+%% Autocorrelation for Looping
 
 tic;
-[AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fname);
-tAutoEr = toc;
-
-disp(tAutoE);
-disp(tAutoEr);
-
-rtau = Cor2tau(RACor);
-rtaur = Cor2tau(RACorr);
-
-% Loop
-
-tic;
-[lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fname);
+fnamel = strcat('Loop-Auto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+[lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fnamel);
 tAutoL = toc;
 
 tic;
-[lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fname);
+fnamelr = strcat('Loop-rAuto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+[lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
 tAutoLr = toc;
 
-disp(tAutoL);
+disp(strcat('tAutoL',tAutoL);
 disp(tAutoLr);
 
-ltau = Cor2tau(LACor, pathN, fname);
-ltaur = Cor2tau(LACorr);
+ltau = Cor2tau(LACor, pathN, fnamel);
+ltaur = Cor2tau(LACorr, pathN, fnamelr);
 
 
 % tLoop = zeros(1,10);
@@ -329,7 +329,91 @@ stP = zeros(ftrial,fnode); % record inital states
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
-    stP(k,:) = p;
+    stP(n,:) = p;
+    % To twist till looped
+    [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
+    pTf(n) = fin;
+    pEf(n) = pE(Pnew, fHc, fHt);
+    pDf(n) = HTd;
+    finP(n,:) = Pnew;
+end
+
+% plot histograms
+
+fig1 = figure;
+histogram(pTf, 'BinWidth', 50);
+title(strcat('Time Histogram for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+xc = xlim;
+xl = xc(1)*0.2+xc(2)*0.8;
+yc = ylim;
+yl1 = yc(1)*0.17+yc(2)*0.83;
+yl2 = yc(1)*0.23+yc(2)*0.77;
+text(xl,yl1,strcat('mean=',num2str(mean(pTf))),'Color','red','FontSize',12);
+text(xl,yl2,strcat('var=',num2str(var(pTf))),'Color','red','FontSize',12);
+filename = strcat(fpathN, 'Loop-T-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+parsaveas(gcf, filename,'png');
+close gcf;
+
+filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+parsave(filename, 'pTf', '-ascii');
+
+fig2 = figure;
+histogram(pEf, 'BinWidth', 0.2);
+% line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
+title(strcat('Energy Histogram for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)));
+xc = xlim;
+xl = xc(1)*0.2+xc(2)*0.8;
+yc = ylim;
+yl1 = yc(1)*0.17+yc(2)*0.83;
+yl2 = yc(1)*0.23+yc(2)*0.77;
+text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
+text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
+filename = strcat(fpathN, 'Loop-E-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+parsaveas(gcf, filename,'png');
+close gcf;
+
+filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+parsave(filename, 'pEf', '-ascii');
+
+fig3 = figure;
+histogram(pDf, 'BinWidth', 0.2);
+% line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
+title(strcat('HTdistance Histogram for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+xc = xlim;
+xl = xc(1)*0.2+xc(2)*0.8;
+yc = ylim;
+yl1 = yc(1)*0.17+yc(2)*0.83;
+yl2 = yc(1)*0.23+yc(2)*0.77;
+text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
+text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
+filename = strcat(fpathN, 'Loop-D-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+parsaveas(gcf, filename,'png');
+close gcf;
+
+filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+parsave(filename, 'pDf', '-ascii');
+
+end
+
+function [finP, stP, pTf, pEf, pDf] = loopSimulationRandpoly(fnode, stP, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
+% simulate the looping events from 1 poly
+% Generate a polymer
+
+% initial direction = positive x
+% default change = counterclockwise angle
+% in this vector, first and last node are zero
+% from node 2 to node n-1, they are either 1 (CW) or -1 (CCW)
+
+% Construct a recorder
+
+pTf = zeros(1,ftrial); % record times to form a loop
+pEf = zeros(1,ftrial); % record energy to form a loop
+pDf = zeros(1,ftrial); % record head-tail distances to form a loop
+finP = zeros(ftrial,fnode); % record end states
+
+% for n = 1:ftrial
+parfor n = 1:ftrial
+    p = stP(n,:);
     % To twist till looped
     [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
     pTf(n) = fin;
