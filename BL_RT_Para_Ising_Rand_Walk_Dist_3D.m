@@ -10,15 +10,15 @@ close all;
 
 %% Initialization
 
-rng(378);                 % randomizer
+rng(1234);                 % randomizer
 
-trial = 1000;             % trials
+trial = 500;             % trials
 twist = 2000;             % change of set state changes
 node = 500;               % nodes of rigid polymer
-AutoT = 2000;             % autocorrelation run time
+AutoT = 1000;             % autocorrelation run time
 
 global pathN;
-pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-Eq-',num2str(node),'/');
+pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-EquilLoop-',num2str(node),'/');
 system(['mkdir ' pathN]);
 
 angle = 0.1;            % in rad, angle changed in each twist
@@ -65,37 +65,37 @@ disp(strcat('tAutoEr=',tAutoEr));
 rtau = Cor2tau(RACor, pathN, fnamee);
 rtaur = Cor2tau(RACorr, pathN, fnameer);
 
-%% Main functions for Looping
-
-tic;
-[lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
-tLoop = toc;
-
-tic;
-[lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, lstPr, trial, pathN, a, L, angle, Hc, Ht);
-tLoopr = toc;
-
-disp(strcat('tLoop=',tLoop));
-disp(strcat('tLoopr=',tLoopr));
-
-
-%% Autocorrelation for Looping
-
-tic;
-fnamel = strcat('Loop-Auto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-[lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fnamel);
-tAutoL = toc;
-
-tic;
-fnamelr = strcat('Loop-rAuto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-[lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
-tAutoLr = toc;
-
-disp(strcat('tAutoL',tAutoL));
-disp(strcat('tAutoLr',tAutoLr));
-
-ltau = Cor2tau(LACor, pathN, fnamel);
-ltaur = Cor2tau(LACorr, pathN, fnamelr);
+% %% Main functions for Looping
+% 
+% tic;
+% [lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
+% tLoop = toc;
+% 
+% tic;
+% [lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, lstPr, trial, pathN, a, L, angle, Hc, Ht);
+% tLoopr = toc;
+% 
+% disp(strcat('tLoop=',tLoop));
+% disp(strcat('tLoopr=',tLoopr));
+% 
+% 
+% %% Autocorrelation for Looping
+% 
+% tic;
+% fnamel = strcat('Loop-Auto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+% [lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fnamel);
+% tAutoL = toc;
+% 
+% tic;
+% fnamelr = strcat('Loop-rAuto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+% [lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
+% tAutoLr = toc;
+% 
+% disp(strcat('tAutoL',tAutoL));
+% disp(strcat('tAutoLr',tAutoLr));
+% 
+% ltau = Cor2tau(LACor, pathN, fnamel);
+% ltaur = Cor2tau(LACorr, pathN, fnamelr);
 
 
 % tLoop = zeros(1,10);
@@ -124,7 +124,7 @@ parfor n = 1:ftrial
     % from node 2 to node n-1, they are either 1 (CW) or -1 (CCW)
     
     p = stP(n,:);
-    [Pnew, HTd] = twistEquilRand(fpathN, fAutoT, n, p, fa, fL, fangle, fHc, fHt);
+    [Pnew, HTd] = fasttwistEquilRand(fpathN, fAutoT, n, p, fa, fL, fangle, fHc, fHt);
     fAfinP(n,:) = Pnew;
 end
 
