@@ -37,15 +37,15 @@ Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 %% Main functions
 
 tic;
-[finP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+[finP, stP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
 tEq = toc;
 
 tic;
-[finPr,pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+[finPr, stPr, pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
 tEqr = toc;
 
 tic;
-[lfinP, pTf, pEf, pDf] = loopSimulation(node, trial, pathN, a, L, angle, Hc, Ht);
+[lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation(node, trial, pathN, a, L, angle, Hc, Ht);
 tLoop = toc;
 
 disp(tEq);
@@ -62,13 +62,21 @@ tic;
 [AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht);
 tAutor = toc;
 
+[lfinP, LACor] = AutocorLoop(lfinP,lstP);
+
+
+function [flfinP, fLACor] = AutocorLoop(flfinP,flstP)
+% calculate autocorrelation for looping
+
+
+end
+
 % calculate relaxation time
 rtau = Cor2tau(RACor);
 rtaur = Cor2tau(RACorr);
 
 % calculate looping time
 ltau = Cor2tau(LACor);
-ltaur = Cor2tau(LACorr);
 
 % tLoop = zeros(1,10);
 % tic;
@@ -80,7 +88,7 @@ ltaur = Cor2tau(LACorr);
 
 %% Local functions
 
-function [finP, pEf, pDf] = EquilSimulation1poly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
+function [finP, stP, pEf, pDf] = EquilSimulation1poly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution from one single state
 
 % Generate a polymer
@@ -96,10 +104,12 @@ p = createRandPolymer(fnode); % randomly generate
 
 pEf = zeros(1,ftrial); % record energy in equilibrium
 pDf = zeros(1,ftrial); % record head-tail distances in equilibrium
-finP = zeros(ftrial,fnode); % record head-tail distances in equilibrium
+finP = zeros(ftrial,fnode); % record end states
+stP = zeros(ftrial,fnode); % record inital states
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
+    stP(n,:) = p;
     [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
@@ -146,14 +156,15 @@ save(filename, 'pDf', '-ascii');
 
 end
 
-function [finP, pEf, pDf] = EquilSimulationRandpoly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
+function [finP, stP, pEf, pDf] = EquilSimulationRandpoly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution from a random state
 
 % Construct a recorder
 
 pEf = zeros(1,ftrial); % record energy in equilibrium
 pDf = zeros(1,ftrial); % record head-tail distances in equilibrium
-finP = zeros(ftrial,fnode); % record head-tail distances in equilibrium
+finP = zeros(ftrial,fnode); % record end states
+stP = zeros(ftrial,fnode); % record inital states
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
@@ -165,7 +176,7 @@ parfor n = 1:ftrial
     % from node 2 to node n-1, they are either 1 (CW) or -1 (CCW)
     
     p = createRandPolymer(fnode); % randomly generate
-    
+    stP(n,:) = p;
     [Pnew, HTd] = twistEquilRand(fpathN, ftwist, n, p, fa, fL, fangle, fHc, fHt);
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
@@ -212,7 +223,7 @@ save(filename, 'pDf', '-ascii');
 
 end
 
-function [finP, pTf, pEf, pDf] = loopSimulation(fnode, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
+function [finP, stP, pTf, pEf, pDf] = loopSimulation(fnode, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the looping events
 % Generate a polymer
 
@@ -228,16 +239,18 @@ p = createRandPolymer(fnode); % randomly generate
 pTf = zeros(1,ftrial); % record times to form a loop
 pEf = zeros(1,ftrial); % record energy to form a loop
 pDf = zeros(1,ftrial); % record head-tail distances to form a loop
-finP = zeros(ftrial,fnode); % record head-tail distances in equilibrium
+finP = zeros(ftrial,fnode); % record end states
+stP = zeros(ftrial,fnode); % record inital states
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
+    stP(k,:) = p;
     % To twist till looped
     [Pnew, HTd, fin] = twistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
     pTf(n) = fin;
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
-    finP(n) = Pnew;
+    finP(n,:) = Pnew;
 end
 
 % plot histograms
