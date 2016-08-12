@@ -68,9 +68,9 @@ end
 % plot histograms
 
 fig1 = figure;
-histogram(pEf, 'BinWidth', 0.2);
+histogram(pEf, 'BinWidth', 0.1);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
-title(strcat('Energy Histogram in Equilibrium for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)));
+title(strcat('Energy Histogram in Equilibrium for N', num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)));
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
@@ -78,17 +78,17 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
-filename = strcat(fpathN, 'Equil-E-Hist-N',num2str(length(fp)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(fpathN, 'Equil-E-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 %close gcf;
 
-filename = strcat(fpathN, 'Equil-E-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+filename = strcat(fpathN, 'Equil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pEf', '-ascii');
 
 fig2 = figure;
-histogram(pDf, 'BinWidth', 0.2);
+histogram(pDf, 'BinWidth', 10);
 % line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
-title(strcat('HTdistance Histogram in Equilibrium for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+title(strcat('HTdistance Histogram in Equilibrium for N', num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
@@ -96,11 +96,11 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
-filename = strcat(fpathN, 'Equil-D-Hist-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(fpathN, 'Equil-D-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 %close gcf;
 
-filename = strcat(fpathN, 'Equil-D-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+filename = strcat(fpathN, 'Equil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pDf', '-ascii');
 
 end
@@ -132,9 +132,9 @@ end
 % plot histograms
 
 fig1 = figure;
-histogram(pEf, 'BinWidth', 0.2);
+histogram(pEf, 'BinWidth', 0.1);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
-title(strcat('Energy Histogram in rEquilibrium for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)));
+title(strcat('Energy Histogram in rEquilibrium for N', num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)));
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
@@ -142,17 +142,17 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
-filename = strcat(fpathN, 'Equil-E-Hist-N',num2str(length(fp)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(fpathN, 'Equil-E-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 %close gcf;
 
-filename = strcat(fpathN, 'rEquil-E-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+filename = strcat(fpathN, 'rEquil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pEf', '-ascii');
 
 fig2 = figure;
-histogram(pDf, 'BinWidth', 0.2);
+histogram(pDf, 'BinWidth', 10);
 % line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
-title(strcat('HTdistance Histogram in rEquilibrium for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+title(strcat('HTdistance Histogram in rEquilibrium for N', num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
@@ -160,11 +160,11 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
-filename = strcat(fpathN, 'Equil-D-Hist-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(fpathN, 'Equil-D-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 %close gcf;
 
-filename = strcat(fpathN, 'rEquil-D-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+filename = strcat(fpathN, 'rEquil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pDf', '-ascii');
 
 end
@@ -213,11 +213,11 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pTf(2:ftrial+1)))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pTf(2:ftrial+1)))),'Color','red','FontSize',12);
-filename = strcat(fpathN, 'Loop-T-Hist-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(fpathN, 'Loop-T-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 %close gcf;
 
-filename = strcat(fpathN, 'Loop-T-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pTf', '-ascii');
 
 fig2 = figure;
@@ -231,11 +231,11 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pEf(2:ftrial+1)))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf(2:ftrial+1)))),'Color','red','FontSize',12);
-filename = strcat(fpathN, 'Loop-E-Hist-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(fpathN, 'Loop-E-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 %close gcf;
 
-filename = strcat(fpathN, 'Loop-E-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pEf', '-ascii');
 
 fig3 = figure;
@@ -249,11 +249,11 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pDf(2:ftrial+1)))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf(2:ftrial+1)))),'Color','red','FontSize',12);
-filename = strcat(fpathN, 'Loop-D-Hist-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
+filename = strcat(fpathN, 'Loop-D-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 saveas(gcf, filename,'png');
 %close gcf;
 
-filename = strcat(fpathN, 'Loop-D-N',num2str(length(p)),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 save(filename, 'pDf', '-ascii');
 
 end
@@ -310,8 +310,8 @@ grid;
 xlabel 'x';
 ylabel 'y';
 zlabel 'z';
-title(strcat('3D Simulation of ',' ',num2str(length(fp)),' node rigid polymer dynamics'));
-
+   title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+ 
 disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
 while HTdist(fPnew, fL, fangle) > fa
@@ -357,7 +357,7 @@ while HTdist(fPnew, fL, fangle) > fa
     xlabel 'x';
     ylabel 'y';
     zlabel 'z';
-    title(strcat('3D Simulation of ',' ',num2str(length(fp)),' node rigid polymer dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+    title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
     xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
@@ -414,8 +414,8 @@ grid;
 xlabel 'x';
 ylabel 'y';
 zlabel 'z';
-title(strcat('3D Simulation of ',' ',num2str(length(fp)),' node rigid polymer dynamics'));
-
+   title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+ 
 disp(strcat('Debug0: ', num2str(fPnew)));
 
 for t = 1:ftwist
@@ -459,7 +459,7 @@ for t = 1:ftwist
     xlabel 'x';
     ylabel 'y';
     zlabel 'z';
-    title(strcat('3D Simulation of ',' ',num2str(length(fp)),' node rigid polymer dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+    title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
     xc = xlim;
     xl = xc(1)*0.2+xc(2)*0.8;
     yc = ylim;
