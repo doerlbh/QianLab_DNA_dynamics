@@ -68,35 +68,38 @@ disp(tLoopr);
 % Equilibrium
 
 tic;
-[AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fname);
+fnamee = strcat('Equil-Auto-N',num2str(fnode),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+[AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnamee);
 tAutoE = toc;
 
 tic;
-[AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fname);
+fnameer = strcat('Equil-rAuto-N',num2str(fnode),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+[AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
 tAutoEr = toc;
 
 disp(tAutoE);
 disp(tAutoEr);
 
-rtau = Cor2tau(RACor);
-rtaur = Cor2tau(RACorr);
+rtau = Cor2tau(RACor, pathN, fnamee);
+rtaur = Cor2tau(RACorr, pathN, fnameer);
 
 % Loop
 
 tic;
-
-[lfinP, LACor] = AutocorLoop(lfinP, lstP, fL, fangle, fname);
+fnamel = strcat('Loop-Auto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+[lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fnamel);
 tAutoL = toc;
 
 tic;
-[lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, fL, fangle, fname);
+fnamelr = strcat('Loop-rAuto-N',num2str(fnode),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+[lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
 tAutoLr = toc;
 
 disp(tAutoL);
 disp(tAutoLr);
 
-ltau = Cor2tau(LACor);
-ltaur = Cor2tau(LACorr);
+ltau = Cor2tau(LACor, pathN, fnamel);
+ltaur = Cor2tau(LACorr, pathN, fnamelr);
 
 
 % tLoop = zeros(1,10);
@@ -109,7 +112,7 @@ ltaur = Cor2tau(LACorr);
 
 %% Local functions
 
-function [fAfinP, fRACor] = AutocorEq(stP, fnode, ftrial,fAutoT, fpathN, fa, fL, fangle, fHc, fHt)
+function [fAfinP, fRACor] = AutocorEq(stP, fnode, ftrial,fAutoT, fpathN, fa, fL, fangle, fHc, fHt, fname)
 % calculate the autocorrelation from any intial states
 
 % Construct a recorder
@@ -129,25 +132,33 @@ parfor n = 1:ftrial
     fAfinP(n,:) = Pnew;
 end
 
-[fAfinP, fRACor] = AutocorLoop(fAfinP, stP, fL, fangle);
+[fAfinP, fRACor] = AutocorLoop(fAfinP, stP, fL, fangle, fpathN, fname);
 
 end
 
-function [flfinP, fLACor] = AutocorLoop(flfinP, flstP, fL, fangle)
+function [flfinP, fLACor] = AutocorLoop(flfinP, flstP, fL, fangle, fpathN, fname)
 % calculate autocorrelation for looping
 
 n = length(flfinP);
 fLACor = zeros(1, n);
 
 for c = 1:n
-Cst = finConfig(flstP(c,:), fL, fangle);
-Cfin = finConfig(flfinP(c,:), fL, fangle)
-fLACor(c) = dot(Cst, Cfin);
+    Cst = finConfig(flstP(c,:), fL, fangle);
+    Cfin = finConfig(flfinP(c,:), fL, fangle)
+    fLACor(c) = dot(Cst, Cfin);
 end
+
+fig = figure;
+plot(fLACor);
+title(fname);
+parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
+close gcf;
+
+parsave(strcat(fpathN, fname, '.txt'), 'fLACor', '-ascii');
 
 end
 
-function tau = Cor2tau(Cor)
+function tau = Cor2tau(Cor, fpathN, fname)
 % find tau from autocorrelation
 
 n = length(Cor);
@@ -155,6 +166,14 @@ tau = zeros(1,n)
 for c = 1:n
     tau(c) = -log(Cor(c))/c;
 end
+
+fig = figure;
+plot(tau);
+title(fname);
+parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
+close gcf;
+
+parsave(strcat(fpathN, fname, '.txt'), 'tau', '-ascii');
 
 end
 
@@ -200,11 +219,11 @@ yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Equil-E-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
-saveas(gcf, filename,'png');
+parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Equil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pEf', '-ascii');
+parsave(filename, 'pEf', '-ascii');
 
 fig2 = figure;
 histogram(pDf, 'BinWidth', 10);
@@ -218,11 +237,11 @@ yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Equil-D-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
-saveas(gcf, filename,'png');
+parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Equil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pDf', '-ascii');
+parsave(filename, 'pDf', '-ascii');
 
 end
 
@@ -267,11 +286,11 @@ yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Equil-E-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
-saveas(gcf, filename,'png');
+parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'rEquil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pEf', '-ascii');
+parsave(filename, 'pEf', '-ascii');
 
 fig2 = figure;
 histogram(pDf, 'BinWidth', 10);
@@ -285,11 +304,11 @@ yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Equil-D-Hist-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
-saveas(gcf, filename,'png');
+parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'rEquil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pDf', '-ascii');
+parsave(filename, 'pDf', '-ascii');
 
 end
 
@@ -336,11 +355,11 @@ yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pTf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pTf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-T-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
-saveas(gcf, filename,'png');
+parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pTf', '-ascii');
+parsave(filename, 'pTf', '-ascii');
 
 fig2 = figure;
 histogram(pEf, 'BinWidth', 0.2);
@@ -354,11 +373,11 @@ yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-E-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
-saveas(gcf, filename,'png');
+parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pEf', '-ascii');
+parsave(filename, 'pEf', '-ascii');
 
 fig3 = figure;
 histogram(pDf, 'BinWidth', 0.2);
@@ -372,11 +391,11 @@ yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
 filename = strcat(fpathN, 'Loop-D-Hist-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
-saveas(gcf, filename,'png');
+parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pDf', '-ascii');
+parsave(filename, 'pDf', '-ascii');
 
 end
 
@@ -432,7 +451,8 @@ grid;
 xlabel 'x';
 ylabel 'y';
 zlabel 'z';
-title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+title(strcat('3D_Simulation_of_Node_',num2str(length(fp)),'_Trial_',num2str(ft),'_rigid_polymer_dynamics'));
+axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
 
 disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
