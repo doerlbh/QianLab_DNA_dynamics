@@ -65,13 +65,47 @@ tAutor = toc;
 [lfinP, LACor] = AutocorLoop(lfinP, lstP, fL, fangle);
 
 
-
 % calculate relaxation time
 rtau = Cor2tau(RACor);
 rtaur = Cor2tau(RACorr);
 
 % calculate looping time
 ltau = Cor2tau(LACor);
+
+% tLoop = zeros(1,10);
+% tic;
+% for n = 1:10
+%     [pTf, pEf, pDf] = loopSimulation1poly(n*100, trial, pathN, a, L, angle, Hc, Ht);
+%     tLoop(n) = toc;
+% end
+% plot(tLoop);
+
+%% Local functions
+
+
+function [fAfinP, fRACor] = AutocorEq(stP, fnode, ftrial,fAutoT, fpathN, fa, fL, fangle, fHc, fHt)
+% calculate the autocorrelation from any intial states
+
+% Construct a recorder
+fAfinP = zeros(ftrial,fnode); % record end states
+
+% for n = 1:ftrial
+parfor n = 1:ftrial
+    % Generate a polymer
+    
+    % initial direction = positive x
+    % default change = counterclockwise angle
+    % in this vector, first and last node are zero
+    % from node 2 to node n-1, they are either 1 (CW) or -1 (CCW)
+    
+    p = stP(n,:);
+    [Pnew, HTd] = twistEquilRand(fpathN, fAutoT, n, p, fa, fL, fangle, fHc, fHt);
+    fAfinP(n,:) = Pnew;
+end
+
+[fAfinP, fRACor] = AutocorLoop(fAfinP, stP, fL, fangle);
+
+end
 
 function [flfinP, fLACor] = AutocorLoop(flfinP, flstP, fL, fangle)
 % calculate autocorrelation for looping
@@ -97,16 +131,6 @@ for c = 1:n
 end
 
 end
-
-% tLoop = zeros(1,10);
-% tic;
-% for n = 1:10
-%     [pTf, pEf, pDf] = loopSimulation1poly(n*100, trial, pathN, a, L, angle, Hc, Ht);
-%     tLoop(n) = toc;
-% end
-% plot(tLoop);
-
-%% Local functions
 
 function [finP, stP, pEf, pDf] = EquilSimulation1poly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution from one single state
