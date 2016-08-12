@@ -45,7 +45,7 @@ tic;
 tEqr = toc;
 
 tic;
-[lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation(node, trial, pathN, a, L, angle, Hc, Ht);
+[lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
 tLoop = toc;
 
 disp(tEq);
@@ -62,14 +62,9 @@ tic;
 [AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht);
 tAutor = toc;
 
-[lfinP, LACor] = AutocorLoop(lfinP,lstP);
+[lfinP, LACor] = AutocorLoop(lfinP, lstP, fL, fangle);
 
 
-function [flfinP, fLACor] = AutocorLoop(flfinP,flstP)
-% calculate autocorrelation for looping
-
-
-end
 
 % calculate relaxation time
 rtau = Cor2tau(RACor);
@@ -78,10 +73,35 @@ rtaur = Cor2tau(RACorr);
 % calculate looping time
 ltau = Cor2tau(LACor);
 
+function [flfinP, fLACor] = AutocorLoop(flfinP, flstP, fL, fangle)
+% calculate autocorrelation for looping
+
+n = length(flfinP);
+fLACor = zeros(1, n);
+
+for c = 1:n
+Cst = finConfig(flstP(c,:), fL, fangle);
+Cfin = finConfig(flfinP(c,:), fL, fangle)
+fLACor(c) = dot(Cst, Cfin);
+end
+
+end
+
+function tau = Cor2tau(Cor)
+% find tau from autocorrelation
+
+n = length(Cor);
+tau = zeros(1,n)
+for c = 1:n
+    tau(c) = -log(Cor(c))/c;
+end
+
+end
+
 % tLoop = zeros(1,10);
 % tic;
 % for n = 1:10
-%     [pTf, pEf, pDf] = loopSimulation(n*100, trial, pathN, a, L, angle, Hc, Ht);
+%     [pTf, pEf, pDf] = loopSimulation1poly(n*100, trial, pathN, a, L, angle, Hc, Ht);
 %     tLoop(n) = toc;
 % end
 % plot(tLoop);
@@ -223,8 +243,8 @@ save(filename, 'pDf', '-ascii');
 
 end
 
-function [finP, stP, pTf, pEf, pDf] = loopSimulation(fnode, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
-% simulate the looping events
+function [finP, stP, pTf, pEf, pDf] = loopSimulation1poly(fnode, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
+% simulate the looping events from 1 poly
 % Generate a polymer
 
 % initial direction = positive x
@@ -573,6 +593,14 @@ function fD = HTdist(fp, fL, fangle)
 
 fm = buildV(fp, fL, fangle);
 fD = norm(sum(fm,2));
+
+end
+
+function fC = finConfig(fp, fL, fangle)
+% To calculate the final configuration of end to end of a polymer
+
+fm = buildV(fp, fL, fangle);
+fC = sum(fm,2);
 
 end
 
