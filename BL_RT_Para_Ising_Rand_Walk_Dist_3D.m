@@ -1,5 +1,7 @@
-% Realtime_Ising_Rigid_Polymer_Dynamics_3D_using_parallel_Rand_Walk_Dist
-% To simulate the dynamics of a rigid polymer by Ising model in 3D
+% Realtime_Ising_Rigid_Polymer_Dynamics_3D_using_parallel_Rand_Walk_Dist_Auto
+% To simulate the dynamics of a rigid polymer by Ising model in 3D plus
+% autocorrelation
+%
 % by Baihan Lin, Qian Lab
 % August 2016
 
@@ -10,10 +12,10 @@ close all;
 
 rng(378);                 % randomizer
 
-trial = 1000;              % trials
-twist = 2000;            % change of set state changes
+trial = 1000;             % trials
+twist = 2000;             % change of set state changes
 node = 500;               % nodes of rigid polymer
-AutoT = 1000;
+AutoT = 2000;             % autocorrelation run time
 
 global pathN;
 pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-Eq-',num2str(node),'/');
@@ -42,12 +44,31 @@ tic;
 [finPr,pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
 tEqr = toc;
 
+tic;
+[lfinP, pTf, pEf, pDf] = loopSimulation(node, trial, pathN, a, L, angle, Hc, Ht);
+tLoop = toc;
+
 disp(tEq);
 disp(tEqr);
+disp(tLoop);
+
+%% Autocorrelation
 
 tic;
-[pEfr, pDfr] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht);
+[AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht);
 tAuto = toc;
+
+tic;
+[AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht);
+tAutor = toc;
+
+% calculate relaxation time
+rtau = Cor2tau(RACor);
+rtaur = Cor2tau(RACorr);
+
+% calculate looping time
+ltau = Cor2tau(LACor);
+ltaur = Cor2tau(LACorr);
 
 % tLoop = zeros(1,10);
 % tic;
