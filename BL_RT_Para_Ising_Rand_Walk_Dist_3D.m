@@ -15,7 +15,7 @@ twist = 2000;            % change of set state changes
 node = 500;               % nodes of rigid polymer
 
 global pathN;
-pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-',num2str(node),'/');
+pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-Eq-',num2str(node),'/');
 system(['mkdir ' pathN]);
 
 angle = 0.1;            % in rad, angle changed in each twist
@@ -40,6 +40,9 @@ tEq = toc;
 tic;
 [pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
 tEqr = toc;
+
+disp(tEq);
+disp(tEqr);
 
 % [pTf, pEf, pDf] = loopSimulation(node, trial, pathN, a, L, angle, Hc, Ht);
 
