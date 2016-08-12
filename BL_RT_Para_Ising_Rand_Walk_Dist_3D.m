@@ -50,12 +50,12 @@ disp(strcat('tEqr=',tEqr));
 %% Autocorrelation for Equilibrium
 
 tic;
-fnamee = strcat('Equil-Auto-N',num2str(fnode),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+fnamee = strcat('Equil-Auto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
 [AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnamee);
 tAutoE = toc;
 
 tic;
-fnameer = strcat('Equil-rAuto-N',num2str(fnode),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+fnameer = strcat('Equil-rAuto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
 [AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
 tAutoEr = toc;
 
