@@ -12,13 +12,13 @@ rng(378);                 % randomizer
 
 trial = 200;              % trials
 %twist = 200;            % change of state
-node = 500;               % nodes of rigid polymer
+node = 200;               % nodes of rigid polymer
 
 global pathN;
 pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-Protein-',num2str(node),'/');
 system(['mkdir ' pathN]);
 
-angle = 0.2;           % in rad, angle changed in each twist
+angle = 0.5;           % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 20;                 % threshold to form loop
 
@@ -143,12 +143,14 @@ disp(strcat('T-',num2str(ft),'-------------'));
 fPnew = fp;
 ffin = 1;
 
+stair = length(fp)-1;
+
 fig = figure;
 fv = visV(buildV(fPnew, fL, fangle));
 xt = fv(1,:);
 yt = fv(2,:);
 zt = fv(3,:);
-plot3(xt,yt,zt,'LineWidth',3);
+plot3(xt(1:stair),yt(1:stair),zt(1:stair),'LineWidth',8);
 xlmin = -0.6*length(fp)*fL;
 xlmax = 0.6*length(fp)*fL;
 ylmin = -0.6*length(fp)*fL;
@@ -188,12 +190,14 @@ while HTdist(fPnew, fL, fangle) > fa
     
     ffin = ffin+1;
     
+    stair = length(fp)-1;
+    
     fv = visV(buildV(fPnew, fL, fangle));
     xt = fv(1,:);
     yt = fv(2,:);
     zt = fv(3,:);
     
-    plot3(xt, yt, zt,'LineWidth',3);
+    plot3(xt(1:stair), yt(1:stair), zt(1:stair),'LineWidth',8);
     grid;
 xlmin = -0.6*length(fp)*fL;
 xlmax = 0.6*length(fp)*fL;
