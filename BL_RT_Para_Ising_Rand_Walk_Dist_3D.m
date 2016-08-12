@@ -163,13 +163,29 @@ for c = 1:n
     tau(c) = -log(Cor(c))/c;
 end
 
-fig = figure;
+fig1 = figure;
 plot(tau);
 title(fname);
 parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
 close gcf;
 
-save(strcat(fpathN, fname, '.txt'), 'tau', '-ascii');
+taur = real(tau);
+taui = imag(tau);
+
+fig2 = figure;
+plot(taur);
+title(fname);
+parsaveas(gcf, strcat(fpathN, fname, '-r.png'),'png');
+close gcf;
+
+fig3 = figure;
+plot(taui);
+title(fname);
+parsaveas(gcf, strcat(fpathN, fname, '-i.png'),'png');
+close gcf;
+
+save(strcat(fpathN, fname, '-r.txt'), 'taur', '-ascii');
+save(strcat(fpathN, fname, '-i.txt'), 'taui', '-ascii');
 
 end
 
