@@ -1,8 +1,8 @@
-% Realtime_Ising_Rigid_Polymer_Dynamics_3D_using_parallel_Rand_Walk_Dist_Auto
-% To simulate the dynamics of a rigid polymer by Ising model in 3D plus
+% Realtime_Ising_Rigid_Protein_Dynamics_3D_using_parallel_Rand_Walk_Dist_Auto
+% To simulate the dynamics of a rigid protein by Ising model in 3D plus
 % autocorrelation
 %
-% by Baihan Lin, Qian Lab
+% by Baihan Lin, Baker Lab
 % August 2016
 
 clear all;
@@ -12,99 +12,61 @@ close all;
 
 rng(1234);                 % randomizer
 
-trial = 500;             % trials
+trial = 1000;             % trials
 twist = 2000;             % change of set state changes
-node = 500;               % nodes of rigid polymer
-AutoT = 1000;             % autocorrelation run time
+% node = 500;               % nodes of rigid polymer
+AutoT = 2000;             % autocorrelation run time
 
 global pathN;
-pathN = strcat('/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/3D-EquilLoop-',num2str(node),'/');
+pathN = '/Users/sunnylinL/Documents/Sim/data/';
 system(['mkdir ' pathN]);
 
-angle = 0.1;            % in rad, angle changed in each twist
+angle = 0.2;            % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 20;                 % threshold to form loop
 
 Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
 Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
-% b = 1;      % redefined beta based on H
 
-% Pc = exp(-b*Hc)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of cis change
-% Pc2 = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*Ht));
-% Pt = exp(-b*Ht)/(exp(-b*Hc)+exp(-b*Ht));       % Probablity of trans change
-% Pt2 = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*Ht));
-
-%% Main functions for Equilibrium
-
-tic;
-[finP, stP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
-tEq = toc;
-
-tic;
-[finPr, stPr, pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
-tEqr = toc;
-
-disp(strcat('tEq=',tEq));
-disp(strcat('tEqr=',tEqr));
-
-%% Autocorrelation for Equilibrium
-
-tic;
-fnamee = strcat('Equil-Auto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-[AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnamee);
-tAutoE = toc;
-
-tic;
-fnameer = strcat('Equil-rAuto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-[AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
-tAutoEr = toc;
-
-disp(strcat('tAutoE=',tAutoE));
-disp(strcat('tAutoEr=',tAutoEr));
-
-rtau = Cor2tau(RACor, pathN, fnamee);
-rtaur = Cor2tau(RACorr, pathN, fnameer);
-
-%% Main functions for Looping
-
-tic;
-[lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
-tLoop = toc;
-
-tic;
-[lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, finPr, trial, pathN, a, L, angle, Hc, Ht);
-tLoopr = toc;
-
-disp(strcat('tLoop=',tLoop));
-disp(strcat('tLoopr=',tLoopr));
-
-
-%% Autocorrelation for Looping
-
-tic;
-fnamel = strcat('Loop-Auto-N',num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-[lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fnamel);
-tAutoL = toc;
-
-tic;
-fnamelr = strcat('Loop-rAuto-N',num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-[lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
-tAutoLr = toc;
-
-disp(strcat('tAutoL',tAutoL));
-disp(strcat('tAutoLr',tAutoLr));
-
-ltau = Cor2tau(LACor, pathN, fnamel);
-ltaur = Cor2tau(LACorr, pathN, fnamelr);
-
-
-% tLoop = zeros(1,10);
-% tic;
-% for n = 1:10
-%     [pTf, pEf, pDf] = loopSimulation1poly(n*100, trial, pathN, a, L, angle, Hc, Ht);
-%     tLoop(n) = toc;
-% end
-% plot(tLoop);
+parfor it = 1:10
+    
+    node = it*100;
+    
+    %% Main functions for Equilibrium
+    
+    [finP, stP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+    
+    [finPr, stPr, pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+    
+    %% Autocorrelation for Equilibrium
+    
+    fnamee = strcat('Equil-Auto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+    [AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnamee);
+    
+    fnameer = strcat('Equil-rAuto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+    [AfinPr, RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
+    
+    rtau = Cor2tau(RACor, pathN, fnamee);
+    rtaur = Cor2tau(RACorr, pathN, fnameer);
+    
+    %% Main functions for Looping
+    
+    [lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
+    
+    [lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, finPr, trial, pathN, a, L, angle, Hc, Ht);
+    
+    %% Autocorrelation for Looping
+    
+    fnamel = strcat('Loop-Auto-N',num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+    [lfinP, LACor] = AutocorLoop(lfinP, lstP, L, angle, pathN, fnamel);
+    
+    fnamelr = strcat('Loop-rAuto-N',num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+    [lfinPr, LACorr] = AutocorLoop(lfinPr, lstPr, L, angle, pathN, fnamelr);
+    
+    ltau = Cor2tau(LACor, pathN, fnamel);
+    ltaur = Cor2tau(LACorr, pathN, fnamelr);
+    
+end
 
 %% Local functions
 
@@ -620,7 +582,7 @@ filename = strcat(fpath, 'N',num2str(length(fp)),'-T',num2str(ft),'-a',num2str(f
 parsaveas(gcf, filename,'png');
 close gcf;
 
-disp(strcat('final state: ', num2str(fPnew)));
+% disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish time: ', num2str(ffin)));
 disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
 
@@ -737,7 +699,7 @@ fPnew = fp;
 ffin = 1;
 
 % stair = length(fp)-1;
-% 
+%
 % fig = figure;
 % fv = visV(buildV(fPnew, fL, fangle));
 % xt = fv(1,:);
@@ -757,7 +719,7 @@ ffin = 1;
 % zlabel 'z';
 % title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
 % axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
-% 
+%
 % disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
 
 while HTdist(fPnew, fL, fangle) > fa
@@ -783,42 +745,42 @@ while HTdist(fPnew, fL, fangle) > fa
     end
     
     ffin = ffin+1;
-%     
-%     stair = length(fp)-1;
-%     
-%     fv = visV(buildV(fPnew, fL, fangle));
-%     xt = fv(1,:);
-%     yt = fv(2,:);
-%     zt = fv(3,:);
-%     
-%     plot3(xt(1:stair), yt(1:stair), zt(1:stair));
-%     grid;
-%     xlmin = -length(fp)*fL;
-%     xlmax = length(fp)*fL;
-%     ylmin = -length(fp)*fL;
-%     ylmax = length(fp)*fL;
-%     zlmin = -length(fp)*fL;
-%     zlmax = length(fp)*fL;
-%     axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
-%     xlabel 'x';
-%     ylabel 'y';
-%     zlabel 'z';
-%     title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
-%     xc = xlim;
-%     xl = xc(1)*0.2+xc(2)*0.8;
-%     yc = ylim;
-%     yl1 = yc(1)*0.14+yc(2)*0.86;
-%     yl2 = yc(1)*0.26+yc(2)*0.74;
-%     zc = zlim;
-%     zl = zc(1)*0.2+zc(2)*0.8;
-% %     
-%     text(xl,yl1,zl, strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
-%     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
-%     drawnow;
+    %
+    %     stair = length(fp)-1;
+    %
+    %     fv = visV(buildV(fPnew, fL, fangle));
+    %     xt = fv(1,:);
+    %     yt = fv(2,:);
+    %     zt = fv(3,:);
+    %
+    %     plot3(xt(1:stair), yt(1:stair), zt(1:stair));
+    %     grid;
+    %     xlmin = -length(fp)*fL;
+    %     xlmax = length(fp)*fL;
+    %     ylmin = -length(fp)*fL;
+    %     ylmax = length(fp)*fL;
+    %     zlmin = -length(fp)*fL;
+    %     zlmax = length(fp)*fL;
+    %     axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+    %     xlabel 'x';
+    %     ylabel 'y';
+    %     zlabel 'z';
+    %     title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
+    %     xc = xlim;
+    %     xl = xc(1)*0.2+xc(2)*0.8;
+    %     yc = ylim;
+    %     yl1 = yc(1)*0.14+yc(2)*0.86;
+    %     yl2 = yc(1)*0.26+yc(2)*0.74;
+    %     zc = zlim;
+    %     zl = zc(1)*0.2+zc(2)*0.8;
+    % %
+    %     text(xl,yl1,zl, strcat('ffin=',num2str(ffin)),'Color','red','FontSize',12);
+    %     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
+    %     drawnow;
     
     %       pause(0.6)
     
-%     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
+    %     disp(strcat('Debug ',num2str(ffin),': ', num2str(fPnew)));
     
 end
 
@@ -842,7 +804,7 @@ disp(strcat('T-',num2str(ft),'-------------'));
 fPnew = fp;
 
 % stair = length(fp)-1;
-% 
+%
 % fig = figure;
 % fv = visV(buildV(fPnew, fL, fangle));
 % xt = fv(1,:);
@@ -862,7 +824,7 @@ fPnew = fp;
 % zlabel 'z';
 % title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
 % axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
-% 
+%
 % disp(strcat('Debug0: ', num2str(fPnew)));
 
 for t = 1:ftwist
@@ -887,41 +849,41 @@ for t = 1:ftwist
         break;
     end
     
-%     stair = length(fp)-1;
-%     
-%     fv = visV(buildV(fPnew, fL, fangle));
-%     xt = fv(1,:);
-%     yt = fv(2,:);
-%     zt = fv(3,:);
-%     
-%     plot3(xt(1:stair), yt(1:stair), zt(1:stair));
-%     grid;
-%     xlmin = -length(fp)*fL;
-%     xlmax = length(fp)*fL;
-%     ylmin = -length(fp)*fL;
-%     ylmax = length(fp)*fL;
-%     zlmin = -length(fp)*fL;
-%     zlmax = length(fp)*fL;
-%     axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
-%     xlabel 'x';
-%     ylabel 'y';
-%     zlabel 'z';
-%     title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
-%     xc = xlim;
-%     xl = xc(1)*0.2+xc(2)*0.8;
-%     yc = ylim;
-%     yl1 = yc(1)*0.14+yc(2)*0.86;
-%     yl2 = yc(1)*0.26+yc(2)*0.74;
-%     zc = zlim;
-%     zl = zc(1)*0.2+zc(2)*0.8;
-%     
-%     text(xl,yl1,zl, strcat('t=',num2str(t)),'Color','red','FontSize',12);
-%     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
-%     drawnow;
+    %     stair = length(fp)-1;
+    %
+    %     fv = visV(buildV(fPnew, fL, fangle));
+    %     xt = fv(1,:);
+    %     yt = fv(2,:);
+    %     zt = fv(3,:);
+    %
+    %     plot3(xt(1:stair), yt(1:stair), zt(1:stair));
+    %     grid;
+    %     xlmin = -length(fp)*fL;
+    %     xlmax = length(fp)*fL;
+    %     ylmin = -length(fp)*fL;
+    %     ylmax = length(fp)*fL;
+    %     zlmin = -length(fp)*fL;
+    %     zlmax = length(fp)*fL;
+    %     axis([ xlmin, xlmax, ylmin, ylmax, zlmin, zlmax]);
+    %     xlabel 'x';
+    %     ylabel 'y';
+    %     zlabel 'z';
+    %     title(strcat('3D-Simulation-of-Node-',num2str(length(fp)),'-Trial-',num2str(ft),'-rigid-polymer-dynamics'));
+    %     xc = xlim;
+    %     xl = xc(1)*0.2+xc(2)*0.8;
+    %     yc = ylim;
+    %     yl1 = yc(1)*0.14+yc(2)*0.86;
+    %     yl2 = yc(1)*0.26+yc(2)*0.74;
+    %     zc = zlim;
+    %     zl = zc(1)*0.2+zc(2)*0.8;
+    %
+    %     text(xl,yl1,zl, strcat('t=',num2str(t)),'Color','red','FontSize',12);
+    %     text(xl,yl2,zl, strcat('HTdist=',num2str(HTdist(fPnew, fL, fangle))),'Color','red','FontSize',12);
+    %     drawnow;
     
     %       pause(0.6)
     
-%     disp(strcat('Debug ',num2str(t),': ', num2str(fPnew)));
+    %     disp(strcat('Debug ',num2str(t),': ', num2str(fPnew)));
     
 end
 
