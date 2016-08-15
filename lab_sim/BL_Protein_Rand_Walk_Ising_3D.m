@@ -33,66 +33,37 @@ parfor it = 1:10
     node = it*100;
     
     %% Main functions for Equilibrium
-    
-    %     [finP, stP, pEf, pDf] = EquilSimulation1poly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
-    
+        
     [finPr, stPr, pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
     
     %% Autocorrelation for Equilibrium
     
-    %     fnamee = strcat('Equil-Auto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-    %     [AfinP, RACor] = AutocorEq(finP, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnamee);
-    
+ 
     fnameer = strcat('Equil-rAuto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-    [RACorr] = AutocorEq(finPr, node, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
-    
-    rtau = Cor2tau(RACor, pathN, fnamee);
+    [RACorr] = AutocorEq(finPr, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
+
     rtaur = Cor2tau(RACorr, pathN, fnameer);
     
     %% Main functions for Looping
-    
-    %     [lfinP, lstP, lpTf, lpEf, lpDf] = loopSimulation1poly(node, trial, pathN, a, L, angle, Hc, Ht);
-    
+        
     [lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, finPr, trial, pathN, a, L, angle, Hc, Ht);
     
 end
 
 %% Local functions
 
-function [fRACor] = AutocorEq(stP, fnode, ftrial, fAutoT, fpathN, fa, fL, fangle, fHc, fHt, fname)
+function [fACor] = AutocorEq(stP, ftrial, fAutoT, fpathN, fa, fL, fangle, fHc, fHt, fname)
 % calculate the autocorrelation from any intial states
 
 % Construct a recorder
-fAfinP = zeros(ftrial,fnode); % record end states
-ftPT = zeros(ftrial*3,fAutoT);
+fACorT = zeros(ftrial,fAutoT+1);
 
 % for n = 1:ftrial
-parfor n = 1:ftrial
-    
+parfor n = 1:ftrial  
     p = stP(n,:);
     [Pnew, ftP, HTd] = fasttwistEquilRand(fpathN, fAutoT, n, p, fa, fL, fangle, fHc, fHt);
-    fAfinP(n,:) = Pnew;
-    ftPT(round(n*3-2):round(n*3) ,:) = ftP;
-
-end
-
-[fRACor] = AutocorEnd(ftPT,fpathN, fname);
-
-end
-
-function [fACor] = AutocorEnd(ftP, fpathN, fname)
-% calculate autocorrelation for t
-
-[k,n] = size(ftP);
-fACorT = zeros(round(k/3), n);
-Cst = ftP(1);
-Re0 = dot(Cst, Cst);
-
-for r = 1:round(k/3)
-    for c = 1:n
-        Cfin = ftP(r*3-2:r*3, n);
-        fACorT(r,c) = dot(Cst, Cfin)/Re0;
-    end
+    [fACT] = AutocorEnd(ftP);
+    fACorT = [fACorT; fACT];
 end
 
 fACor = mean(fACorT);
@@ -104,6 +75,21 @@ parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
 close gcf;
 
 save(strcat(fpathN, fname, '.txt'), 'fACor', '-ascii');
+
+end
+
+function [fACorT] = AutocorEnd(ftP)
+% calculate autocorrelation for t
+
+n = length(ftP);
+fACorT = zeros(1, n);
+Cst = ftP(1);
+Re0 = dot(Cst, Cst);
+
+    for c = 1:n
+        Cfin = ftP(n);
+        fACorT(c) = dot(Cst, Cfin)/Re0;
+    end
 
 end
 
@@ -787,7 +773,7 @@ disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
 
 end
 
-function [fPnew, fHTd] = fasttwistEquilRand(fpath, ftwist, ft, fp, fa, fL, fangle, fHc, fHt)
+function [fPnew, ftP, fHTd] = fasttwistEquilRand(fpath, ftwist, ft, fp, fa, fL, fangle, fHc, fHt)
 % To twist randomly till formed a loop
 
 disp(strcat('T-',num2str(ft),'-------------'));
