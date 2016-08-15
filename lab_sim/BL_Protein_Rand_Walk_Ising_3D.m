@@ -12,13 +12,13 @@ close all;
 
 rng(1234);                 % randomizer
 
-trial = 2000;             % trials
-twist = 2000;             % change of set state changes
+trial = 20;             % trials
+twist = 20;             % change of set state changes
 % node = 500;               % nodes of rigid polymer
-AutoT = 2000;             % autocorrelation run time
+AutoT = 20;             % autocorrelation run time
 
 global pathN;
-pathN = '/Users/sunnylinL/Dropbox/Sim/data/20160815/';
+pathN = '/Users/sunnylinL/Dropbox/Sim/data/test-20160815/';
 system(['mkdir ' pathN]);
 
 angle = 0.01;            % in rad, angle changed in each twist
@@ -28,7 +28,7 @@ a = 20;                 % threshold to form loop
 Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
 Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 
-parfor it = 1:10
+parfor it = 9:10
     
     node = it*100;
     
@@ -46,7 +46,7 @@ parfor it = 1:10
     
     %% Main functions for Looping
     
-    [lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, finPr, trial, pathN, a, L, angle, Hc, Ht);
+%     [lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, finPr, trial, pathN, a, L, angle, Hc, Ht);
     
 end
 
