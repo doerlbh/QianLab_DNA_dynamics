@@ -64,6 +64,7 @@ function [fRACor] = AutocorEq(stP, fnode, ftrial, fAutoT, fpathN, fa, fL, fangle
 
 % Construct a recorder
 fAfinP = zeros(ftrial,fnode); % record end states
+ftPT = zeros(ftrial*3,fAutoT);
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
@@ -71,28 +72,30 @@ parfor n = 1:ftrial
     p = stP(n,:);
     [Pnew, ftP, HTd] = fasttwistEquilRand(fpathN, fAutoT, n, p, fa, fL, fangle, fHc, fHt);
     fAfinP(n,:) = Pnew;
-    
-    = finConfig(flstP(c,:), fL, fangle)
+    ftPT(round(n*3-2):round(n*3) ,:) = ftP;
+
 end
 
-[fRACor] = AutocorEnd(ftP,fpathN, fname);
+[fRACor] = AutocorEnd(ftPT,fpathN, fname);
 
 end
 
 function [fACor] = AutocorEnd(ftP, fpathN, fname)
 % calculate autocorrelation for t
 
-[r,n] = size(ftP);
-fACor = zeros(1, n);
+[k,n] = size(ftP);
+fACorT = zeros(round(k/3), n);
 Cst = ftP(1);
 Re0 = dot(Cst, Cst);
 
-for k = 1:r
+for r = 1:round(k/3)
     for c = 1:n
-        Cfin = ftP(n);
-        fACor(c) = dot(Cst, Cfin)/Re0;
+        Cfin = ftP(r*3-2:r*3, n);
+        fACorT(r,c) = dot(Cst, Cfin)/Re0;
     end
 end
+
+fACor = mean(fACorT);
 
 fig = figure;
 plot(0:n-1, fACor);
