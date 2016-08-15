@@ -99,9 +99,9 @@ function tau = Cor2tau(Cor, fpathN, fname)
 % find tau from autocorrelation
 
 n = length(Cor);
-x = 1:n;
-X = [ones(length(x),1) x];
-y = log(Cor);
+x = (1:n).';
+X = [ones(n,1) x];
+y = log(Cor.');
 b = X\y;
 yCalc = b*X;
 
