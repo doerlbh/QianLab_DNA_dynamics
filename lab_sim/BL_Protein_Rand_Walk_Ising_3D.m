@@ -12,23 +12,24 @@ close all;
 
 rng(1234);                 % randomizer
 
-trial = 20;             % trials
+trial = 10;             % trials
 twist = 20;             % change of set state changes
 % node = 500;               % nodes of rigid polymer
 AutoT = 20;             % autocorrelation run time
 
 global pathN;
-pathN = '/Users/sunnylinL/Dropbox/Sim/data/test-20160815/';
+pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/lab_sim/data/test1-20160815/';
+% pathN = '/Users/sunnylinL/Dropbox/Sim/data/test-20160815/';
 system(['mkdir ' pathN]);
 
-angle = 0.01;            % in rad, angle changed in each twist
+angle = 0.02;            % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 20;                 % threshold to form loop
 
 Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
 Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 
-parfor it = 9:10
+parfor it = 10:10
     
     node = it*100;
     
@@ -42,6 +43,7 @@ parfor it = 9:10
     fnameer = strcat('Equil-rAuto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
     [RACorr] = AutocorEq(finPr, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
     
+    fnameer = strcat('Equil-rTau-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)); 
     rtaur = Cor2tau(RACorr, pathN, fnameer);
     
     %% Main functions for Looping
@@ -69,7 +71,7 @@ end
 fACor = mean(fACorT);
 
 fig = figure;
-plot(0:n-1, fACor);
+plot(0:fAutoT, fACor);
 title(fname);
 parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
 close gcf;
@@ -97,34 +99,63 @@ function tau = Cor2tau(Cor, fpathN, fname)
 % find tau from autocorrelation
 
 n = length(Cor);
-tau = zeros(1,n);
-for c = 1:n
-    tau(c) = -log(Cor(c))/c;
-end
+x = 1:n;
+X = [ones(length(x),1) x];
+y = log(Cor);
+b = X\y;
+yCalc = b*X;
 
 fig1 = figure;
-plot(tau);
-title(fname);
+scatter(x,y);
+hold on
+plot(x,yCalc);
+xlabel('t')
+ylabel('log(Autocorrelation)')
+title(strcat('Autocorrelation to find relaxation tau(',fname,')'));
+legend('Data','Slope & Intercept','Location','best');
+grid on
+
+tau = 1/b(2);
+
+xc = xlim;
+xl = xc(1)*0.2+xc(2)*0.8;
+yc = ylim;
+yl = yc(1)*0.2+yc(2)*0.8;
+text(xl,yl,strcat('tau=',num2str(tau)),'Color','red','FontSize',12);
+
 parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
 close gcf;
 
-taur = real(tau);
-taui = imag(tau);
+save(strcat(fpathN, fname, '.txt'), 'tau', '-ascii');
 
-fig2 = figure;
-plot(taur);
-title(fname);
-parsaveas(gcf, strcat(fpathN, fname, '-r.png'),'png');
-close gcf;
-
-fig3 = figure;
-plot(taui);
-title(fname);
-parsaveas(gcf, strcat(fpathN, fname, '-i.png'),'png');
-close gcf;
-
-save(strcat(fpathN, fname, '-r.txt'), 'taur', '-ascii');
-save(strcat(fpathN, fname, '-i.txt'), 'taui', '-ascii');
+% tau = zeros(1,n);
+% for c = 1:n
+%     tau(c) = -log(Cor(c))/c;
+% end
+% 
+% fig1 = figure;
+% plot(tau);
+% title(fname);
+% parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
+% close gcf;
+% 
+% taur = real(tau);
+% taui = imag(tau);
+% 
+% fig2 = figure;
+% plot(taur);
+% title(fname);
+% parsaveas(gcf, strcat(fpathN, fname, '-r.png'),'png');
+% close gcf;
+% 
+% fig3 = figure;
+% plot(taui);
+% title(fname);
+% parsaveas(gcf, strcat(fpathN, fname, '-i.png'),'png');
+% close gcf;
+% 
+% save(strcat(fpathN, fname, '-r.txt'), 'taur', '-ascii');
+% save(strcat(fpathN, fname, '-i.txt'), 'taui', '-ascii');
 
 end
 
