@@ -10,16 +10,16 @@ close all;
 
 %% Initialization
 
-rng(1234);                 % randomizer
+rng(123);                 % randomizer
 
-trial = 100;             % trials
-twist = 100;             % change of set state changes
+trial = 2000;             % trials
+twist = 4000;             % change of set state changes
 % node = 500;               % nodes of rigid polymer
-AutoT = 100;             % autocorrelation run time
+AutoT = 4000;             % autocorrelation run time
 
 global pathN;
-pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/lab_sim/data/test1-20160817/';
-% pathN = '/Users/sunnylinL/Dropbox/Sim/data/test-20160815/';
+pathN = '/Users/sunnylinL/Dropbox/Sim1/data/data_20160817/';
+% pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/lab_sim/data/test1-20160817/';
 system(['mkdir ' pathN]);
 
 angle = 0.02;            % in rad, angle changed in each twist
@@ -29,7 +29,7 @@ a = 20;                 % threshold to form loop
 Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
 Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 
-parfor it = 3:3
+parfor it = 1:10
     
     node = it*100;
     
