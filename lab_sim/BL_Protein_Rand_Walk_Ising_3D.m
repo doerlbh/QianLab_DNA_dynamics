@@ -12,10 +12,10 @@ close all;
 
 rng(1234);                 % randomizer
 
-trial = 3;             % trials
-twist = 5;             % change of set state changes
+trial = 100;             % trials
+twist = 100;             % change of set state changes
 % node = 500;               % nodes of rigid polymer
-AutoT = 5;             % autocorrelation run time
+AutoT = 100;             % autocorrelation run time
 
 global pathN;
 pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/lab_sim/data/test1-20160817/';
@@ -29,7 +29,7 @@ a = 20;                 % threshold to form loop
 Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
 Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 
-parfor it = 9:10
+parfor it = 3:3
     
     node = it*100;
     
@@ -100,9 +100,9 @@ function tau = Cor2tau(Cor, fpathN, fname)
 
 n = length(Cor);
 x = (1:n).';
-X = [ones(n,1) x]
+X = [ones(n,1) x];
 y = log(Cor.');
-b = X\y
+b = X\y;
 yCalc = X*b;
 
 fig1 = figure;
