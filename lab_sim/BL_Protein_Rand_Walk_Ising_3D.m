@@ -13,9 +13,9 @@ close all;
 rng(123);                 % randomizer
 
 trial = 2000;             % trials
-twist = 4000;             % change of set state changes
+twist = 3000;             % change of set state changes
 % node = 500;               % nodes of rigid polymer
-AutoT = 4000;             % autocorrelation run time
+AutoT = 3000;             % autocorrelation run time
 
 global pathN;
 pathN = '/Users/sunnylinL/Dropbox/Sim1/data/data_20160817/';
