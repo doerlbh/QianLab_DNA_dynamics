@@ -12,15 +12,15 @@ close all;
 
 rng(111);                 % randomizer
 
-trial = 1000;             % trials
-twist = 2000;             % change of set state changes
+trial = 100;             % trials
+twist = 200;             % change of set state changes
 % node = 500;               % nodes of rigid polymer
-AutoT = 2000;             % autocorrelation run time
+AutoT = 200;             % autocorrelation run time
 
 global pathN;
 % pathN = '/Users/sunnylinL/Dropbox/Sim1/data/data_20160817/';
 % pathN = '/gscratch/stf/sunnylin/other/sim/data/';
-pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/lab_sim/data/data_20160818/';
+pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/data_20160819/';
 
 system(['mkdir ' pathN]);
 
@@ -32,7 +32,8 @@ Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
 Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 
 % parfor it = 1:5
-for it = 1:5
+it = 1;
+% for it = 1:5
     
     node = it*200;
     
@@ -42,17 +43,17 @@ for it = 1:5
     
     %% Autocorrelation for Equilibrium
     
-    fnameer = strcat('Equil-rAuto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+    fnameer = strcat('Equil-Auto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
     [RACorr] = AutocorEq(finPr, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
     
-    fnameer = strcat('Equil-rTau-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)); 
+    fnameer = strcat('Equil-Tau-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)); 
     rtaur = Cor2tau(RACorr, pathN, fnameer);
     
     %% Main functions for Looping
     
 %     [lfinPr, lstPr, lpTfr, lpEfr, lpDfr] = loopSimulationRandpoly(node, finPr, trial, pathN, a, L, angle, Hc, Ht);
     
-end
+% end
 
 % %% Local functions
 % 

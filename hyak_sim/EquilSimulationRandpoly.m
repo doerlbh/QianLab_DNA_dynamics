@@ -61,6 +61,6 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'rEquil-D-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pDf', '-ascii');
+parsave(filename, pDf, '-ascii');
 
 end

@@ -99,6 +99,9 @@ fHTd = HTdist(fPnew, fL, fangle);
 % parsaveas(gcf, filename,'png');
 % close gcf;
 
+filename = strcat(fpathN, 'Equiltwist-ftP-N',num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+parsave(filename, ftP, '-ascii');
+
 disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
 
