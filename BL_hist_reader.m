@@ -29,7 +29,7 @@ close gcf;
 
 pDf = dlmread(strcat(path,'rEquil-D-N1000-t2000-a20-l1-r0.02.txt'));
 fig2 = figure;
-histogram(pDf, 'BinWidth', 1);
+histogram(pDf, 'BinWidth', 5);
 title('HTdistance Histogram in rEquilibrium for N1000-A2000-a20-l1-r0.02');
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
@@ -40,7 +40,7 @@ text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
 filename = strcat(path,'rEquil-D-Hist-N1000-t2000-a20-l1-r0.02.png');
 saveas(gcf, filename,'png');
-close gcf;
+% close gcf;
 
 %% rAuto
 
