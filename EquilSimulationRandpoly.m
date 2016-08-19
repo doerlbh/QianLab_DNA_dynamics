@@ -28,7 +28,7 @@ end
 % plot histograms
 
 fig1 = figure;
-histogram(pEf, 'BinWidth', 0.1);
+histogram(pEf, 'BinWidth', 1);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('Energy Histogram in rEquilibrium for N', num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)));
 xc = xlim;
@@ -46,7 +46,7 @@ filename = strcat(fpathN, 'rEquil-E-N',num2str(fnode),'-t',num2str(ftwist),'-a',
 save(filename, 'pEf', '-ascii');
 
 fig2 = figure;
-histogram(pDf, 'BinWidth', 10);
+histogram(pDf, 'BinWidth', 20);
 % line([pDf(1),pDf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('HTdistance Histogram in rEquilibrium for N', num2str(fnode),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
 xc = xlim;

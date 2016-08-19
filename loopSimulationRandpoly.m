@@ -46,7 +46,7 @@ filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2st
 save(filename, 'pTf', '-ascii');
 
 fig2 = figure;
-histogram(pEf, 'BinWidth', 0.2);
+histogram(pEf, 'BinWidth', 1);
 % line([pEf(1) pEf(1)],get(axes,'YLim'),'Color',[1 0 0],'LineWidth',3);
 title(strcat('Energy Histogram for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)));
 xc = xlim;
