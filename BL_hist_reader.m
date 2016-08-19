@@ -5,15 +5,15 @@
 
 clear all;
 close all;
-path = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/lab_sim/data/data_20160818/';
+path = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/hyak_sim/data/data_20160818/';
 
 %% pEf
 
-pEf = dlmread(strcat(path,'rEquil-E-N400-t2000-a20-l1-r0.02.txt'));
+pEf = dlmread(strcat(path,'rEquil-E-N1000-t2000-a20-l1-r0.02.txt'));
 
 fig1 = figure;
-histogram(pEf, 'BinWidth', 0.2);
-title('Energy Histogram in rEquilibrium for N400-t2000-a20-l1-r0.02');
+histogram(pEf, 'BinWidth', 0.4);
+title('Energy Histogram in rEquilibrium for N1000-t2000-a20-l1-r0.02');
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
@@ -21,16 +21,16 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pEf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pEf))),'Color','red','FontSize',12);
-filename = strcat(path,'rEquil-E-Hist-N400-t2000-a20-l1-r0.02.png');
+filename = strcat(path,'rEquil-E-Hist-N1000-t2000-a20-l1-r0.02.png');
 saveas(gcf, filename,'png');
 close gcf;
 
 %% pDf
 
-pDf = dlmread(strcat(path,'rEquil-D-N400-t2000-a20-l1-r0.02.txt'));
+pDf = dlmread(strcat(path,'rEquil-D-N1000-t2000-a20-l1-r0.02.txt'));
 fig2 = figure;
-histogram(pDf, 'BinWidth', 0.2);
-title('HTdistance Histogram in rEquilibrium for N400-A2000-a20-l1-r0.02');
+histogram(pDf, 'BinWidth', 1);
+title('HTdistance Histogram in rEquilibrium for N1000-A2000-a20-l1-r0.02');
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
@@ -38,7 +38,7 @@ yl1 = yc(1)*0.17+yc(2)*0.83;
 yl2 = yc(1)*0.23+yc(2)*0.77;
 text(xl,yl1,strcat('mean=',num2str(mean(pDf))),'Color','red','FontSize',12);
 text(xl,yl2,strcat('var=',num2str(var(pDf))),'Color','red','FontSize',12);
-filename = strcat(path,'rEquil-D-Hist-N400-t2000-a20-l1-r0.02.png');
+filename = strcat(path,'rEquil-D-Hist-N1000-t2000-a20-l1-r0.02.png');
 saveas(gcf, filename,'png');
 close gcf;
 
