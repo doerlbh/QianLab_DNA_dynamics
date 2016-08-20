@@ -19,7 +19,7 @@ title(strcat('Autocorrelation to find relaxation tau(',fname,')'));
 legend('Data','Slope & Intercept','Location','best');
 grid on
 
-tau = 1/b(2);
+tau = -1/b(2);
 
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;

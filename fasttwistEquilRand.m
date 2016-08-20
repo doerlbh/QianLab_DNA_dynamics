@@ -5,7 +5,7 @@ function [fPnew, ftP, fHTd] = fasttwistEquilRand(fpathN, ftwist, ft, fp, fa, fL,
 disp(strcat('T-',num2str(ft),'-------------'));
 
 fPnew = fp;
-ftP = zeros(3,ftwist+1);
+ftP = zeros(3,ftwist);
 ftP(:,1) = finConfig(fPnew, fL, fangle);
 % stair = length(fp)-1;
 %

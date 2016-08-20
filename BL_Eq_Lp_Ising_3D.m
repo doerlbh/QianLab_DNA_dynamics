@@ -10,7 +10,7 @@ close all;
 
 %% Initialization
 
-rng(100);                 % randomizer
+rng(111);                 % randomizer
 
 trial = 100;             % trials
 twist = 100;             % change of set state changes
@@ -20,7 +20,7 @@ AutoT = 100;             % autocorrelation run time
 global pathN;
 % pathN = '/Users/sunnylinL/Dropbox/Sim1/data/data_20160817/';
 % pathN = '/gscratch/stf/sunnylin/other/sim/data/';
-pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/lab_sim/data/Mtest_20160820/';
+pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/lab_sim/data/Mtest2_20160820/';
 
 system(['mkdir ' pathN]);
 
