@@ -2,7 +2,7 @@
 % To simulate the dynamics of a rigid protein by Ising model in 3D plus
 % autocorrelation
 %
-% by Baihan Lin, Qian Lab
+% by Baihan Lin, Baker Lab
 % August 2016
 
 clear all;
@@ -12,15 +12,15 @@ close all;
 
 rng(100);                 % randomizer
 
-trial = 100;             % trials
-twist = 100;             % change of set state changes
+trial = 500;             % trials
+twist = 1000;             % change of set state changes
 % node = 500;               % nodes of rigid polymer
-AutoT = 100;             % autocorrelation run time
+AutoT = 1000;             % autocorrelation run time
 
 global pathN;
 % pathN = '/Users/sunnylinL/Dropbox/Sim1/data/data_20160817/';
 % pathN = '/gscratch/stf/sunnylin/other/sim/data/';
-pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/lab_sim/data/Mtest_20160820/';
+pathN = '/gscratch/stf/sunnylin/other/sim/data/data_20160820/';
 
 system(['mkdir ' pathN]);
 

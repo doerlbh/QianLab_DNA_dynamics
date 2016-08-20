@@ -13,6 +13,7 @@ parfor n = 1:ftrial
 end
 
 fACor = mean(fACorT);
+fACor = fACor/fACor(1);
 
 fig = figure;
 plot(0:fAutoT, fACor);

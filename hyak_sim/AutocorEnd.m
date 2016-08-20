@@ -1,14 +1,13 @@
 function [fACorT] = AutocorEnd(ftP)
 % calculate autocorrelation for t
 
-n = length(ftP);
+n = size(ftP,2);
 fACorT = zeros(1, n);
-Cst = ftP(1);
-Re0 = dot(Cst, Cst);
+Cst = ftP(:,1);
 
 for c = 1:n
-    Cfin = ftP(n);
-    fACorT(c) = dot(Cst, Cfin)/Re0;
+    Cfin = ftP(:,c);
+    fACorT(c) = dot(Cst, Cfin);
 end
 
 end

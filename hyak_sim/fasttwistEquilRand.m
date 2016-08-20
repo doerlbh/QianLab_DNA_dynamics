@@ -1,5 +1,5 @@
 
-function [fPnew, ftP, fHTd] = fasttwistEquilRand(fpath, ftwist, ft, fp, fa, fL, fangle, fHc, fHt)
+function [fPnew, ftP, fHTd] = fasttwistEquilRand(fpathN, ftwist, ft, fp, fa, fL, fangle, fHc, fHt)
 % To twist randomly till formed a loop
 
 disp(strcat('T-',num2str(ft),'-------------'));
@@ -98,6 +98,9 @@ fHTd = HTdist(fPnew, fL, fangle);
 % filename = strcat(fpath, 'N',num2str(length(fp)),'-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 % parsaveas(gcf, filename,'png');
 % close gcf;
+
+filename = strcat(fpathN, 'Equiltwist-ftP-N',num2str(length(fp)),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+parsave(filename, ftP, '-ascii');
 
 disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish dist: ', num2str(HTdist(fPnew, fL, fangle))));
