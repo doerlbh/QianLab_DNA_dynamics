@@ -10,17 +10,17 @@ close all;
 
 %% Initialization
 
-rng(123);                 % randomizer
+rng(12);                 % randomizer
 
 trial = 200;             % trials
-twist = 1000;             % change of set state changes
+twist = 2000;             % change of set state changes
 % node = 500;               % nodes of rigid polymer
 AutoT = 1000;             % autocorrelation run time
 
 global pathN;
 % pathN = '/Users/sunnylinL/Dropbox/Sim1/data/data_20160817/';
 % pathN = '/gscratch/stf/sunnylin/other/sim/data/';
-pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/Mdata_20160820/';
+pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/Mdata2_20160820/';
 
 system(['mkdir ' pathN]);
 
@@ -32,7 +32,7 @@ Hc = 1.0;   % in unit of kT, energy level of cis rigid configuration
 Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 
 % parfor it = 1:5
-it = 1;
+it = 5;
 % for it = 1:5
     
     node = it*200;
@@ -40,14 +40,15 @@ it = 1;
     %% Main functions for Equilibrium
     
     [finPr, stPr, pEfr, pDfr] = EquilSimulationRandpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
+    [NfinPr, NstPr, NpEfr, NpDfr] = EquilNatpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
     
     %% Autocorrelation for Equilibrium
-    
-    fnameer = strcat('Equil-Auto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-    [RACorr] = AutocorEq(finPr, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
-    
-    fnameer = strcat('Equil-Tau-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)); 
-    rtaur = Cor2tau(RACorr, pathN, fnameer);
+%     
+%     fnameer = strcat('Equil-Auto-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+%     [RACorr] = AutocorEq(finPr, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
+%     
+%     fnameer = strcat('Equil-Tau-N',num2str(node),'-A',num2str(AutoT),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle)); 
+%     rtaur = Cor2tau(RACorr, pathN, fnameer);
     
     %% Main functions for Looping
     
