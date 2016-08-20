@@ -6,7 +6,7 @@ fACorT = zeros(1, n);
 Cst = ftP(:,1);
 
 for c = 1:n
-    Cfin = ftP(:,n);
+    Cfin = ftP(:,c);
     fACorT(c) = dot(Cst, Cfin);
 end
 
