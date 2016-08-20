@@ -2,13 +2,6 @@
 function [finP, stP, pTf, pEf, pDf] = loopAutorun(fnode, stP, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the looping and calculating autocorrelation for tau
 
-% Generate a polymer
-
-% initial direction = positive x
-% default change = counterclockwise angle
-% in this vector, first and last node are zero
-% from node 2 to node n-1, they are either 1 (CW) or -1 (CCW)
-
 % Construct a recorder
 
 pTf = zeros(1,ftrial); % record times to form a loop
@@ -18,9 +11,17 @@ finP = zeros(ftrial,fnode); % record end states
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
+
+% Generate a polymer
+
+% initial direction = positive x
+% default change = counterclockwise angle
+% in this vector, first and last node are zero
+% from node 2 to node n-1, they are either 1 (CW) or -1 (CCW)
+
     p = stP(n,:);
     % To twist till looped
-    [Pnew, HTd, fin] = fasttwistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
+    [Pnew, ftP, HTd, fin] = fasttwistLoopRand(fpathN, n, p, fa, fL, fangle, fHc, fHt);
     pTf(n) = fin;
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
@@ -44,7 +45,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-T-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pTf', '-ascii');
+parsave(filename, pTf, '-ascii');
 
 fig2 = figure;
 histogram(pEf, 'BinWidth', 1);
@@ -62,7 +63,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-E-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pEf', '-ascii');
+parsave(filename, pEf, '-ascii');
 
 fig3 = figure;
 histogram(pDf, 'BinWidth', 0.2);
@@ -80,7 +81,7 @@ parsaveas(gcf, filename,'png');
 close gcf;
 
 filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
-save(filename, 'pDf', '-ascii');
+parsave(filename, pDf, '-ascii');
 
 end
 

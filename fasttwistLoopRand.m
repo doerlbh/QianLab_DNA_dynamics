@@ -1,11 +1,14 @@
 
-function [fPnew, fHTd, ffin] = fasttwistLoopRand(fpath, ft, fp, fa, fL, fangle, fHc, fHt)
+function [fPnew, ftP, fHTd, ffin] = fasttwistLoopRand(fpath, ft, fp, fa, fL, fangle, fHc, fHt)
 % To twist randomly till formed a loop
 
 disp(strcat('T-',num2str(ft),'-------------'));
 
 fPnew = fp;
 ffin = 1;
+
+ftP = zeros(3,ftwist);
+ftP(:,1) = finConfig(fPnew, fL, fangle);
 
 % stair = length(fp)-1;
 %
@@ -53,6 +56,7 @@ while HTdist(fPnew, fL, fangle) > fa
         break;
     end
     
+    ftP(:,ffin) = finConfig(fPnew, fL, fangle);
     ffin = ffin+1;
     %
     %     stair = length(fp)-1;
@@ -98,6 +102,9 @@ fHTd = HTdist(fPnew, fL, fangle);
 % filename = strcat(fpath, 'N',num2str(length(fp)),'-T',num2str(ft),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.png');
 % parsaveas(gcf, filename,'png');
 % close gcf;
+
+filename = strcat(fpath, 'Loop-ftP-N',num2str(length(fp)),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+parsave(filename, ftP, '-ascii');
 
 disp(strcat('final state: ', num2str(fPnew)));
 disp(strcat('finish time: ', num2str(ffin)));
