@@ -8,8 +8,7 @@ disp(strcat('T-',num2str(ft),'-------------'));
 fPnew = fp;
 ffin = 1;
 
-ftP = zeros(3,ftwist);
-ftP(:,1) = finConfig(fPnew, fL, fangle);
+ftP = finConfig(fPnew, fL, fangle);
 
 % stair = length(fp)-1;
 %
@@ -57,7 +56,7 @@ while HTdist(fPnew, fL, fangle) > fa
         break;
     end
     
-    ftP(:,ffin) = finConfig(fPnew, fL, fangle);
+    ftP = [ftP finConfig(fPnew, fL, fangle)];
     ffin = ffin+1;
     %
     %     stair = length(fp)-1;
@@ -104,7 +103,7 @@ fHTd = HTdist(fPnew, fL, fangle);
 % parsaveas(gcf, filename,'png');
 % close gcf;
 
-filename = strcat(fpath, 'Loop-ftP-N',num2str(length(fp)),'-t',num2str(ftwist),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
+filename = strcat(fpath, 'Loop-ftP-N',num2str(length(fp)),'-f',num2str(ffin),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 parsave(filename, ftP, '-ascii');
 
 disp(strcat('final state: ', num2str(fPnew)));
