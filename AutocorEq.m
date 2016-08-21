@@ -21,6 +21,6 @@ title(fname);
 parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
 close gcf;
 
-save(strcat(fpathN, fname, '.txt'), 'fACor', '-ascii');
+parsave(strcat(fpathN, fname, '.txt'), fACor, '-ascii');
 
 end

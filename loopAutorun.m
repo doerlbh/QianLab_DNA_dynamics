@@ -8,6 +8,7 @@ pTf = zeros(1,ftrial); % record times to form a loop
 pEf = zeros(1,ftrial); % record energy to form a loop
 pDf = zeros(1,ftrial); % record head-tail distances to form a loop
 finP = zeros(ftrial,fnode); % record end states
+fACorT = zeros(ftrial,fAutoT);
 
 % for n = 1:ftrial
 parfor n = 1:ftrial
@@ -26,13 +27,16 @@ parfor n = 1:ftrial
     pEf(n) = pE(Pnew, fHc, fHt);
     pDf(n) = HTd;
     finP(n,:) = Pnew;
+    [fACT] = AutocorEnd(ftP);
+    fACTt = [1:length(fACT);fACT];
+    fACorT = [fACorT fACTt];
 end
 
 % plot histograms
 
 fig1 = figure;
 histogram(pTf, 'BinWidth', 50);
-title(strcat('Time Histogram for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)))
+title(strcat('Time Histogram for N', num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)));
 xc = xlim;
 xl = xc(1)*0.2+xc(2)*0.8;
 yc = ylim;
@@ -83,13 +87,17 @@ close gcf;
 filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 parsave(filename, pDf, '-ascii');
 
- fnamela = strcat('Loop-Auto-N',num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
-%     [LACorr] = AutocorEq(finPr, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
-%     
+fnamela = strcat('Loop-Auto-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle));
+fACor = mean(fACorT);
+fACor = fACor/fACor(1);
 
+fig = figure;
+plot(0:fAutoT-1, fACor);
+title(fname);
+parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
+close gcf;
 
-
-
+parsave(strcat(fpathN, fnamela, '.txt'), fACor, '-ascii');
 
 fnamelt = strcat('Loop-relaxTau-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)); 
 relaxTau = Cor2tau(LACor, fpathN, fnamelt);
