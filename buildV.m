@@ -1,3 +1,5 @@
+% by Baihan Lin, August 2016
+
 function fm = buildV(fp, fL, fangle)
 % To build a vector set (matrix) based on given polymer states
 

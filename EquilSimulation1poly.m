@@ -1,3 +1,5 @@
+% by Baihan Lin, July 2016
+
 function [finP, stP, pEf, pDf] = EquilSimulation1poly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution from one single state
 

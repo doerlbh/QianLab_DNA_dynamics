@@ -1,3 +1,4 @@
+% by Baihan Lin, August 2016
 
 function tau = Cor2tauAll(Cor, fpathN, fname)
 % find tau from autocorrelation

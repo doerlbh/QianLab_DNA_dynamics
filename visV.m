@@ -1,3 +1,5 @@
+% by Baihan Lin, August 2016
+
 function fv = visV(fm)
 % To build a vector set (matrix) based on given polymer states
 

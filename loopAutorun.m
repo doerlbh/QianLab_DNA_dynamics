@@ -1,4 +1,6 @@
 
+% by Baihan Lin, August 2016
+
 function [finP, stP, pTf, pEf, pDf] = loopAutorun(fnode, stP, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the looping and calculating autocorrelation for tau
 
@@ -88,19 +90,19 @@ filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2st
 parsave(filename, pDf, '-ascii');
 
 fnamela = strcat('Loop-Auto-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle));
-fACor = mean(fACorT);
+fACor = unevenmean(fACorT);
 fACor = fACor/fACor(1);
 
 fig = figure;
-plot(0:fAutoT-1, fACor);
-title(fname);
-parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
+plot(0:length(fACor)-1, fACor);
+title(fnamela);
+parsaveas(gcf, strcat(fpathN, fnamela, '.png'),'png');
 close gcf;
 
 parsave(strcat(fpathN, fnamela, '.txt'), fACor, '-ascii');
 
 fnamelt = strcat('Loop-relaxTau-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)); 
-relaxTau = Cor2tauAll(LACor, fpathN, fnamelt);
+relaxTau = Cor2tau(LACor, fpathN, fnamelt);
 
 end
 

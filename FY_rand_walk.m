@@ -1,3 +1,5 @@
+% by Baihan Lin, August 2016
+
 % Rand_Walk_3D
 % Modified by Baihan Lin, Qian Lab, July 2016
 % Originally developed by Felix Ye, Qian Lab, ?? ??

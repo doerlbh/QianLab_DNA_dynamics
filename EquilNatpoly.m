@@ -1,9 +1,11 @@
+% by Baihan Lin, August 2016
+
 function [finP, stP, pEf, pDf] = EquilNatpoly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution from a natural state
 
 b = 1;      % redefined beta based on H
-Pc = exp(-b*Hc)/(2*exp(-b*Hc)+exp(-b*fHt));
-Pt = exp(-b*Ht)/(2*exp(-b*Hc)+exp(-b*fHt));
+Pc = exp(-b*fHc)/(2*exp(-b*fHc)+exp(-b*fHt));
+Pt = exp(-b*fHt)/(2*exp(-b*fHc)+exp(-b*fHt));
 
 % Construct a recorder
 

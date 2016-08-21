@@ -1,3 +1,4 @@
+% by Baihan Lin, August 2016
 
 function fp = createNatPolymer(fnode, Pc, Pt)
 % To create a natural polymer with node nodes

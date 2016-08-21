@@ -1,3 +1,4 @@
+% by Baihan Lin, August 2016
 
 function fp = createRandPolymer(fnode)
 % To create a random polymer with node nodes
