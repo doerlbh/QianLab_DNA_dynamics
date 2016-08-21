@@ -83,6 +83,17 @@ close gcf;
 filename = strcat(fpathN, 'Loop-D-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle),'.txt');
 parsave(filename, pDf, '-ascii');
 
+ fnamela = strcat('Loop-Auto-N',num2str(node),'-a',num2str(a),'-l',num2str(L),'-r',num2str(angle));
+%     [LACorr] = AutocorEq(finPr, trial, AutoT, pathN, a, L, angle, Hc, Ht, fnameer);
+%     
+
+
+
+
+
+fnamelt = strcat('Loop-relaxTau-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)); 
+relaxTau = Cor2tau(LACor, fpathN, fnamelt);
+
 end
 
 
