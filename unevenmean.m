@@ -13,7 +13,7 @@ for k = 1:ele
     uniqy = dot(hv, uniqy)/sum(hv);
 end
 
-unilist = 
+unilist = [uniqx; uniqy];
 
 end
 
