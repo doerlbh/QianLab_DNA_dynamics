@@ -1,3 +1,4 @@
+% by Baihan Lin, August 2016
 
 function [fPnew, fHTd] = twistEquilRand(fpath, ftwist, ft, fp, fa, fL, fangle, fHc, fHt)
 % To twist randomly till formed a loop

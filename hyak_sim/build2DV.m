@@ -1,3 +1,5 @@
+% by Baihan Lin, August 2016
+
 function fm = build2DV(fp, fL, fangle)
 % To build a 2D vector set (matrix) based on given polymer states
 

@@ -1,3 +1,5 @@
+% by Baihan Lin, August 2016
+
 function [fACorT] = AutocorEnd(ftP)
 % calculate autocorrelation for t
 

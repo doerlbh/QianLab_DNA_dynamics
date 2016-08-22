@@ -1,3 +1,4 @@
+% by Baihan Lin, July 2016
 
 function [finP, stP, pTf, pEf, pDf] = loopSimulation1poly(fnode, ftrial,fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the looping events from 1 poly

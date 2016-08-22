@@ -1,3 +1,4 @@
+% by Baihan Lin, August 2016
 
 function fPno = randFlip(fn)
 % To randomly flip

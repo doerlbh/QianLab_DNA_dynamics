@@ -1,3 +1,4 @@
+% by Baihan Lin, August 2016
 
 function fE = pE(fp, fHc, fHt)
 % To calculate energy of a certain polymer state

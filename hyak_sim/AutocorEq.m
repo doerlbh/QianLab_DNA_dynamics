@@ -1,3 +1,5 @@
+% by Baihan Lin, August 2016
+
 function [fACor] = AutocorEq(stP, ftrial, fAutoT, fpathN, fa, fL, fangle, fHc, fHt, fname)
 % calculate the autocorrelation from any intial states
 
@@ -21,6 +23,6 @@ title(fname);
 parsaveas(gcf, strcat(fpathN, fname, '.png'),'png');
 close gcf;
 
-save(strcat(fpathN, fname, '.txt'), 'fACor', '-ascii');
+parsave(strcat(fpathN, fname, '.txt'), fACor, '-ascii');
 
 end
