@@ -10,7 +10,7 @@ close all;
 
 %% Initialization
 
-rng(12);                 % randomizer
+rng(123);                 % randomizer
 
 trial = 200;             % trials
 twist = 2000;             % change of set state changes
@@ -20,11 +20,11 @@ AutoT = 1000;             % autocorrelation run time
 global pathN;
 % pathN = '/Users/sunnylinL/Dropbox/Sim1/data/data_20160817/';
 % pathN = '/gscratch/stf/sunnylin/other/sim/data/';
-pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/Loop_20160821/';
+pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/Loop_20160822/';
 
 system(['mkdir ' pathN]);
 
-angle = 0.2;            % in rad, angle changed in each twist
+angle = 0.05;            % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 20;                 % threshold to form loop
 
