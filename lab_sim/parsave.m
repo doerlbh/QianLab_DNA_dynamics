@@ -3,9 +3,10 @@
 % by Baihan Lin, Qian Lab
 % July 2016
 
-function parsave(x,y,z)
+function parsave(x,input,z)
 
-save(x,y,z);
+y = input;
+save(x,'y',z);
 
 end
 
