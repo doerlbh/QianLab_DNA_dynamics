@@ -10,7 +10,7 @@ uniqx = sort(uniqx);
 ele = length(uniqx);
 uniqy = zeros(1,ele);
 for k = 1:ele
-	hv = (x==uniqx(k));
+	hv = double((x==uniqx(k)));
     uniqy(k) = dot(hv, y)/sum(hv);
 end
 
