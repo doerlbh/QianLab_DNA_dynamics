@@ -1,3 +1,5 @@
+% developed by Baihan Lin, August 2016
+
 function [finP, stP, pEf, pDf] = EquilSimulationRandpoly(fnode, ftrial,ftwist, fpathN, fa, fL, fangle, fHc, fHt)
 % simulate the equilibrium distribution from a random state
 

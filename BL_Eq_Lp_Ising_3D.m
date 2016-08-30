@@ -12,7 +12,7 @@ close all;
 
 rng(123);                 % randomizer
 
-trial = 50;             % trials
+trial = 1000;             % trials
 twist = 2000;             % change of set state changes
 % node = 500;               % nodes of rigid polymer
 AutoT = 1000;             % autocorrelation run time
@@ -24,7 +24,7 @@ pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/Loop2_20160829/';
 
 system(['mkdir ' pathN]);
 
-angle = 0.9;            % in rad, angle changed in each twist
+angle = 0.05;            % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 20;                 % threshold to form loop
 
@@ -33,7 +33,7 @@ Ht = 0.9;   % in unit of kT, energy level of trans rigid configuration
 
 % parfor it = 1:5
 it = 4;
-% for it = 1:5
+for it = 1:10
     
     node = it*100;
     
@@ -44,3 +44,5 @@ it = 4;
     [NfinPr, NstPr, NpEfr, NpDfr] = EquilNatpoly(node, trial, twist, pathN, a, L, angle, Hc, Ht);
         
     [finP,stP,pTf,pEf,pDf] = loopAutorun(node,NfinPr,trial,pathN,a,L,angle,Hc,Ht);
+
+end
