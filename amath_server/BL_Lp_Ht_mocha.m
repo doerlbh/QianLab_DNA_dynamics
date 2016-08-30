@@ -18,7 +18,7 @@ twist = 2000;             % change of set state changes
 AutoT = 1000;             % autocorrelation run time
 
 global pathN;
-pathN = '/home/sunnylin/Dropbox/Git/QianLab_DNA_dynamics/amath_server/mocha_data/Loop_Ht_20160829/';
+pathN = '/home/sunnylin/Dropbox/Git/QianLab_DNA_dynamics/amath_server/data_mocha/Loop_Ht_20160829/';
 
 system(['mkdir ' pathN]);
 
