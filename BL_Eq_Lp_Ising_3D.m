@@ -12,7 +12,7 @@ close all;
 
 rng(123);                 % randomizer
 
-trial = 200;             % trials
+trial = 50;             % trials
 twist = 2000;             % change of set state changes
 % node = 500;               % nodes of rigid polymer
 AutoT = 1000;             % autocorrelation run time
@@ -20,7 +20,7 @@ AutoT = 1000;             % autocorrelation run time
 global pathN;
 % pathN = '/Users/sunnylinL/Dropbox/Sim1/data/data_20160817/';
 % pathN = '/gscratch/stf/sunnylin/other/sim/data/';
-pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/Loop_20160829/';
+pathN = '/Users/DoerLBH/Dropbox/git/QianLab_DNA_dynamics/data/Loop2_20160829/';
 
 system(['mkdir ' pathN]);
 

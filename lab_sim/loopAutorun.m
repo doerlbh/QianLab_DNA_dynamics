@@ -102,7 +102,7 @@ close gcf;
 parsave(strcat(fpathN, fnamela, '.txt'), fACor, '-ascii');
 
 fnamelt = strcat('Loop-relaxTau-N',num2str(fnode),'-a',num2str(fa),'-l',num2str(fL),'-r',num2str(fangle)); 
-relaxTau = Cor2tau(fACor, fpathN, fnamelt);
+relaxTau = Cor2tau(fACor(2,:), fpathN, fnamelt);
 
 end
 

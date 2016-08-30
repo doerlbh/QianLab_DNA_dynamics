@@ -6,10 +6,11 @@ function tau = Cor2tau(Cor, fpathN, fname)
 n = length(Cor);
 x = (1:n).';
 X = [ones(n,1) x];
-y = log(Cor.');
+y = real(log(Cor)).';
 b = X\y;
 yCalc = X*b;
 
+% x = 1:length(y);
 fig1 = figure;
 scatter(x,y);
 hold on

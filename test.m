@@ -1,8 +1,23 @@
 
-x = [ 1 10 5 3 3 2 10 10 3 7 4 9;
-    0 23 4 53 34 2 3 4 3 1 3 5]
+Cor = [ 1 10 5 3 3 2 10 10 3 7];
 
-y = unevenmean(x)
+n = length(Cor);
+x = (1:n).';
+X = [ones(n,1) x];
+y = real(log(Cor)).';
+b = X\y;
+yCalc = X*b;
+
+fig1 = figure;
+scatter(x,y);
+hold on
+plot(x,yCalc);
+xlabel('t')
+ylabel('log(Autocorrelation)')
+% title(strcat('Autocorrelation to find relaxation tau(',fname,')'));
+legend('Data','Slope & Intercept','Location','best');
+grid on
+
 
 % n = 20;
 % x = (4:23).';
