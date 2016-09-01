@@ -18,7 +18,7 @@ twist = 2000;             % change of set state changes
 AutoT = 1000;             % autocorrelation run time
 
 global pathN;
-pathN = '/home/sunnylin/Dropbox/Git/QianLab_DNA_dynamics/amath_server/data_americano/Loop_a_20160829/';
+pathN = '/home/sunnylin/Dropbox/Git/QianLab_DNA_dynamics/amath_server/data_americano/Loop_a_20160902/';
 
 system(['mkdir ' pathN]);
 
@@ -36,7 +36,7 @@ for it = 1:2
 	for ang = 1:10
     
     node = it*100;
-    angle = ang*0.02;
+    angle = (11-ang)*0.05;
 
     %% Main functions for Equilibrium
     

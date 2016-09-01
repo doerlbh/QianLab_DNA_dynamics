@@ -18,11 +18,11 @@ twist = 2000;             % change of set state changes
 AutoT = 1000;             % autocorrelation run time
 
 global pathN;
-pathN = '/home/sunnylin/Dropbox/Git/QianLab_DNA_dynamics/amath_server/data_mocha/Loop_Ht_20160829/';
+pathN = '/home/sunnylin/Dropbox/Git/QianLab_DNA_dynamics/amath_server/data_mocha/Loop_Ht_20160902/';
 
 system(['mkdir ' pathN]);
 
-angle = 0.05;            % in rad, angle changed in each twist
+angle = 0.2;            % in rad, angle changed in each twist
 L = 1;                  % length of each segment of rigid polymer
 a = 20;                 % threshold to form loop
 
